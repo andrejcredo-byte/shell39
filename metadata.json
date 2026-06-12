@@ -1,0 +1,6 @@
+{
+  "name": "ПроМасло Калининград",
+  "description": "Профессиональная замена моторного масла в Калининграде. Качественный сервис, оригинальные масла Shell.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
