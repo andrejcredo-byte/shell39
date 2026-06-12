@@ -14,7 +14,7 @@ function servePricesCsvPlugin() {
       server.middlewares.use((req: any, res: any, next: any) => {
         if (req.url === '/prices.csv') {
           try {
-            const csvPath = path.resolve(__dirname, 'prices.csv');
+            const csvPath = path.resolve(process.cwd(), 'prices.csv');
             if (fs.existsSync(csvPath)) {
               res.setHeader('Content-Type', 'text/csv; charset=utf-8');
               res.end(fs.readFileSync(csvPath));
@@ -29,7 +29,7 @@ function servePricesCsvPlugin() {
     },
     generateBundle() {
       try {
-        const srcPath = path.resolve(__dirname, 'prices.csv');
+        const srcPath = path.resolve(process.cwd(), 'prices.csv');
         if (fs.existsSync(srcPath)) {
           this.emitFile({
             type: 'asset',
@@ -49,7 +49,7 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss(), servePricesCsvPlugin()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(process.cwd(), '.'),
       },
     },
     server: {

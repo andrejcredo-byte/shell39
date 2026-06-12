@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>S-oil</title>
+    <link rel="stylesheet" href="/common/css/common.css" />
+    <link rel="stylesheet" href="/common/css/layout.css" />
+    <link rel="stylesheet" href="/common/css/contents.css" />
+    <!--[if lt IE 9]> <link rel="stylesheet" type="text/css" href="css/ie8.css" /><![endif]-->
+    <script type="text/javascript" src="/common/js/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="/common/js/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="/common/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/common/js/default.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            var siteType = $Util.getCookie("SITETYPE");
+
+            switch (siteType) {
+                case "KOMB":
+                    location.href = "/m/Error.html";
+                    break;
+                case "ENMB":
+                    location.href = "/m/Error.html";
+                    break;
+            }
+
+        });
+    </script>
+
+</head>
+<body class="error">
+    <div class="errorWrap">
+        <h1><img src="/images/common/error_logo.png" alt="s-oil" /></h1>
+        <div class="errorCon st01">
+            <p>현재 서비스 점검 중입니다. 이용에 불편을 드려 죄송하며, 더욱 개선된 서비스로 찾아뵙겠습니다.</p>
+            <p>The system is currently under maintenance. We apologize for any inconvenience caused and look forward to serving you with better service.</p>
+            <!--
+            <dl class="info02">
+                <dt>점검 기간</dt>
+                <dd>2.24(월) 18:00 ~ 21:00</dd>
+                <dt>Maintenance Period</dt>
+                <dd>24 Feb. 18:00 ~ 21:00 (KST)</dd>
+            </dl>
+            -->
+        </div>
+    </div>
+</body>
+</html>

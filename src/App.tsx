@@ -9,10 +9,12 @@ import {
   Menu, 
   X, 
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Search
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { CONTACTS } from "./data";
+import BrandLogo from "./components/BrandLogo";
 
 function ProMasloLogo({ showText = true, dark = false }: { showText?: boolean; dark?: boolean }) {
   return (
@@ -73,6 +75,7 @@ function ProMasloLogo({ showText = true, dark = false }: { showText?: boolean; d
 
 interface CSVProduct {
   id: string;
+  brand: string;
   category: string;
   name: string;
   prices: {
@@ -138,22 +141,16 @@ function InteractiveProductImage({ src, alt, className }: { src: string; alt: st
  *
  * ГДЕ СТРОИТСЯ КАТАЛОГ:
  * Каталог строится динамически в JSX-разметке компонента App (в секции #catalog). Он
- * группирует товары по категориям из файла prices.csv и генерирует аккордеоны и карточки.
+ * группирует товары по брендам из файла prices.csv и генерирует переключатели и карточки.
  *
  * КАК ДОБАВИТЬ НОВЫЙ ТОВАР:
  * Чтобы добавить новый товар, откройте файл 'prices.csv' в текстовом редакторе или в Excel
  * и просто вставьте новую строчку снизу с указанием всех колонок. Например:
- * "5W-40,Shell Helix HX8 5W-40,1300,1500,5500,5W-40,Да"
+ * "Shell,Shell Helix Ultra 5W-30 4л,5200"
  *
  * КАК ИЗМЕНИТЬ ЦЕНУ ТОВАРА:
  * Найдите нужный товар по названию в файле 'prices.csv', измените числовые значения цен
- * (розлив, 1л, 4л или общую цену в зависимости от категории) и сохраните файл.
- *
- * КАК РАБОТАЮТ ИЗОБРАЖЕНИЯ:
- * Ссылки на тяжелые внешние картинки полностью удалены из CSV!
- * База подготовлена для локального хостинга: масла ссылаются на "1.jpg", "2.jpg" и т.д.
- * по порядковому номеру масел, а услуги на "service.jpg".
- * Вы можете просто загрузить файлы картинок "1.jpg", "2.jpg" ... в корень сайта на Beget.
+ * и сохраните файл.
  * ============================================================================
  */
 function parsePricesCSV(text: string): CSVProduct[] {
@@ -179,8 +176,10 @@ function parsePricesCSV(text: string): CSVProduct[] {
     });
   };
 
+  const idxBrand = findIndex(["бренд", "brand", "производитель", "марка"]);
   const idxCategory = findIndex(["категория", "category", "тип"]);
   const idxName = findIndex(["наименование", "название", "name", "товар"]);
+  const idxSinglePrice = findIndex(["цена", "price", "стоимость"]);
   const idxPricePour = findIndex(["розлив", "из бочки", "pour", "бочк"]);
   const idxPrice1l = findIndex(["цена 1л", "1 литр", "1л", "1l", "цена 1 л"]);
   const idxPrice4l = findIndex(["цена 4л", "4 литра", "4л", "4l", "цена 4 л"]);
@@ -213,16 +212,47 @@ function parsePricesCSV(text: string): CSVProduct[] {
     }
     values.push(current.replace(/^["']|["']$/g, '').trim());
 
-    // Получаем значение категории и названия по сопоставленным индексам
+    // Получаем базовые значения
+    const brandFromCol = idxBrand !== -1 ? (values[idxBrand] || "") : "";
     const category = idxCategory !== -1 ? (values[idxCategory] || "") : "";
     const name = idxName !== -1 ? (values[idxName] || "") : "";
 
     // Обязательная базовая валидация записи
-    if (!category || !name) {
+    if (!name) {
       continue;
     }
 
-    // Очистка числовых значений цен от пробелов, знаков ₽, букв руб и приведение в тип number
+    const nameLower = name.toLowerCase();
+    if (nameLower.includes("антифриз") || nameLower.includes("antifreeze")) {
+      continue;
+    }
+
+    // Восстанавливаем бренд из названия или категории, если колонка "Бренд" пустая или отсутствует
+    let brand = brandFromCol.trim();
+    if (!brand) {
+      const knownBrands = [
+        "ADDINOL", "ARAL", "AUTOBACS", "Bardahl", "Castrol", "Elf", "G-Energy", "GM",
+        "Idemitsu", "Kixx", "LIQUI MOLY", "Mobil", "Motul", "NGN", "REPSOL", "ROLF",
+        "ROWE", "S-OIL", "Shell", "Sintec", "TOYOTA", "Teboil", "Total", "VAG",
+        "Valvoline", "ZIC", "ВМПАВТО", "Лукойл"
+      ];
+      const nameUpper = name.toUpperCase();
+      const matchedBrand = knownBrands.find(b => {
+        const bUpper = b.toUpperCase();
+        return nameUpper.startsWith(bUpper) || nameUpper.includes(` ${bUpper} `) || nameUpper.includes(`${bUpper} `) || nameUpper.includes(` ${bUpper}`);
+      });
+      if (matchedBrand) {
+        brand = matchedBrand;
+      } else if (category && (category.toLowerCase().includes("услуг") || category.toLowerCase().includes("сервис"))) {
+        brand = "Услуги";
+      } else if (name.toLowerCase().includes("замен") || name.toLowerCase().includes("услуг")) {
+        brand = "Услуги";
+      } else {
+        brand = category || name.split(" ")[0] || "Другие";
+      }
+    }
+
+    // Расширенная чистка цен
     const parsePriceValue = (val: string | undefined): number | undefined => {
       if (!val) return undefined;
       const digits = val.replace(/\s/g, '').replace(/[^\d]/g, '');
@@ -233,8 +263,23 @@ function parsePricesCSV(text: string): CSVProduct[] {
     const pricePour = idxPricePour !== -1 ? parsePriceValue(values[idxPricePour]) : undefined;
     const priceL1 = idxPrice1l !== -1 ? parsePriceValue(values[idxPrice1l]) : undefined;
     const priceL4 = idxPrice4l !== -1 ? parsePriceValue(values[idxPrice4l]) : undefined;
+    const singlePriceRaw = idxSinglePrice !== -1 ? parsePriceValue(values[idxSinglePrice]) : undefined;
 
-    const viscosity = idxViscosity !== -1 ? (values[idxViscosity] || "") : "";
+    let viscosity = idxViscosity !== -1 ? (values[idxViscosity] || "") : "";
+    if (!viscosity) {
+      const vMatch = name.match(/\b\d+W-\d+\b/i);
+      if (vMatch) {
+        viscosity = vMatch[0];
+      } else if (nameLower.includes("atf")) {
+        viscosity = "ATF";
+      } else if (nameLower.includes("lhm")) {
+        viscosity = "LHM";
+      } else if (nameLower.includes("lds")) {
+        viscosity = "LDS";
+      } else if (nameLower.includes("da")) {
+        viscosity = "DA";
+      }
+    }
 
     const checkBool = (val: string | undefined): boolean => {
       if (!val) return false;
@@ -242,30 +287,31 @@ function parsePricesCSV(text: string): CSVProduct[] {
       return ["да", "yes", "true", "1", "д"].includes(term);
     };
 
-    const isSynthetic = idxSynthetic !== -1 ? checkBool(values[idxSynthetic]) : false;
-    const isSemiSynthetic = idxSemiSynthetic !== -1 ? checkBool(values[idxSemiSynthetic]) : false;
-    const isUltra = idxUltra !== -1 ? checkBool(values[idxUltra]) : false;
-    const isDiesel = idxDiesel !== -1 ? checkBool(values[idxDiesel]) : false;
+    const isSynthetic = idxSynthetic !== -1 ? checkBool(values[idxSynthetic]) : (nameLower.includes("synthetic") || nameLower.includes("ultra") || nameLower.includes("armortech") || nameLower.includes("platinum") || nameLower.includes("synpower"));
+    const isSemiSynthetic = idxSemiSynthetic !== -1 ? checkBool(values[idxSemiSynthetic]) : (nameLower.includes("semi") || nameLower.includes("полусинтет") || nameLower.includes("super 3000") || nameLower.includes("universal") || nameLower.includes("hightec"));
+    const isUltra = idxUltra !== -1 ? checkBool(values[idxUltra]) : nameLower.includes("ultra");
+    const isDiesel = idxDiesel !== -1 ? checkBool(values[idxDiesel]) : (nameLower.includes("diesel") || nameLower.includes("дизель"));
 
-    // Автоматическое определение единой цены для разделов Услуги
-    const isService = category.toLowerCase().includes("услуг") || viscosity.toLowerCase().includes("услуг");
-    let singlePrice: number | undefined = undefined;
-    if (isService) {
+    // Автоматическое определение цены
+    const isService = brand.toLowerCase().includes("услуг") || category.toLowerCase().includes("услуг") || viscosity.toLowerCase().includes("услуг");
+    let singlePrice = singlePriceRaw;
+    if (singlePrice === undefined && (isService || (!pricePour && !priceL1 && !priceL4))) {
       singlePrice = priceL4 || priceL1 || pricePour;
     }
 
     // Автоматическое назначение путей к локальным картинкам:
-    // Первые 12 позиций масел получат 1.jpg, 2.jpg... по порядку строк масел, а услуги - service.jpg
+    // Чтобы не ломать картинки, сопоставляем от 1 до 12, а услуги на service.jpg
     let image = "";
     if (idxImage !== -1 && values[idxImage]) {
       image = values[idxImage];
     } else {
-      image = isService ? "service.jpg" : `${i}.jpg`;
+      image = isService ? "service.jpg" : `${(i % 12) + 1}.jpg`;
     }
 
     result.push({
       id: `csv-${i}-${encodeURIComponent(name.slice(0, 12))}`,
-      category,
+      brand,
+      category: category || brand,
       name,
       prices: {
         pour: pricePour,
@@ -273,7 +319,7 @@ function parsePricesCSV(text: string): CSVProduct[] {
         l4: priceL4
       },
       singlePrice,
-      viscosity: viscosity || (isService ? "Услуги" : category),
+      viscosity: viscosity || (isService ? "Услуги" : (category || brand)),
       image,
       attributes: {
         isSynthetic,
@@ -291,15 +337,106 @@ function parsePricesCSV(text: string): CSVProduct[] {
   return result;
 }
 
+function extractVolumeAndBaseName(fullName: string) {
+  let name = fullName.trim();
+  // Clean raw trailing quotes
+  name = name.replace(/^["']|["']$/g, '').trim();
+
+  // Try to find volume patterns:
+  // e.g. "4л металл", "1л розлив", "1л", "4л", "5л", "208л", "4 л", "4l", "5l.", "1 л.", "5л." etc.
+  const regexVolume = /(\d+(?:\+\d+)?)\s*(?:л\.|л|l\.|l|литров|литра|литр)\s*(розлив|металл|жесть)?/i;
+  const regexPourOnly = /\bрозлив\b/i;
+  const regexCombo = /\b4\+1\b/i;
+
+  let volume = "";
+  let matchedStr = "";
+
+  if (regexVolume.test(name)) {
+    const match = name.match(regexVolume);
+    if (match) {
+      matchedStr = match[0];
+      volume = match[0];
+    }
+  } else if (regexPourOnly.test(name)) {
+    const match = name.match(regexPourOnly);
+    if (match) {
+      matchedStr = match[0];
+      volume = "розлив";
+    }
+  } else if (regexCombo.test(name)) {
+    const match = name.match(regexCombo);
+    if (match) {
+      matchedStr = match[0];
+      volume = "4+1";
+    }
+  }
+
+  let baseName = name;
+  if (matchedStr) {
+    const index = name.lastIndexOf(matchedStr);
+    if (index !== -1) {
+      baseName = name.substring(0, index) + name.substring(index + matchedStr.length);
+    }
+  }
+
+  // Clean the baseName
+  baseName = baseName
+    .replace(/\b(?:масло моторное|моторное масло)\b/i, '')
+    .replace(/[,.;\s]+$/, '') // remove trailing punctuation and spaces
+    .replace(/^[,.;\s]+/, '') // remove leading punctuation and spaces
+    .replace(/\s+/g, ' ')     // collapse extra spaces
+    .trim();
+
+  // Normalize volume for consistent, beautiful display
+  if (!volume) {
+    if (name.toLowerCase().includes("розлив")) {
+      volume = "розлив";
+    } else {
+      volume = "пакет";
+    }
+  } else {
+    volume = volume.toLowerCase().trim();
+    volume = volume
+      .replace(/литр(?:ов|а)?/g, 'л')
+      .replace(/l/g, 'л')
+      .replace(/\./g, '')
+      .replace(/\s+/g, ' ');
+
+    const numberAndUnitMatch = volume.match(/^(\d+(?:\+\d+)?)\s*л(.*)$/);
+    if (numberAndUnitMatch) {
+      const num = numberAndUnitMatch[1];
+      const rest = numberAndUnitMatch[2].trim();
+      volume = num + "л" + (rest ? " " + rest : "");
+    }
+  }
+
+  return { baseName, volume };
+}
+
 export default function App() {
   // Navigation & UI States
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [selectedViscosityFilter, setSelectedViscosityFilter] = useState<string>("all");
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+  const [brandSearchQuery, setBrandSearchQuery] = useState("");
+  const brandDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close brand dropdown on click outside or when selecting
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (brandDropdownRef.current && !brandDropdownRef.current.contains(event.target as Node)) {
+        setIsBrandDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   
   // States для динамической загрузки цен из CSV
   const [products, setProducts] = useState<CSVProduct[]>([]);
-  const [viscosities, setViscosities] = useState<string[]>(["all"]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [csvError, setCsvError] = useState<string | null>(null);
 
@@ -320,18 +457,17 @@ export default function App() {
         
         setProducts(parsed);
         
-        // Динамически получаем все уникальные категории из CSV (чтобы исключить дубли)
-        const categories = Array.from(new Set(parsed.map(p => p.category)))
-          .filter(Boolean);
+        // Динамически получаем все уникальные бренды из CSV (чтобы исключить дубли)
+        const uniqueBrands = Array.from(new Set(parsed.map(p => p.brand))).filter(Boolean);
         
-        setViscosities(["all", ...categories]);
-        
-        // По умолчанию первая категория открыта для привлечения внимания владельца машины, остальные свернуты
-        const initialExpanded: Record<string, boolean> = {};
-        categories.forEach((cat, idx) => {
-          initialExpanded[cat] = idx === 0;
+        // Сортируем по алфавиту, но услуги помещаем в конец
+        const sorted = uniqueBrands.sort((a, b) => {
+          if (a === "Услуги") return 1;
+          if (b === "Услуги") return -1;
+          return a.localeCompare(b, "ru");
         });
-        setExpandedCategories(initialExpanded);
+        
+        setBrands(sorted);
         
       } catch (err: any) {
         console.error("Ошибка при разборе prices.csv:", err);
@@ -344,9 +480,6 @@ export default function App() {
     loadPrices();
   }, []);
   
-  // Custom interactive dropdown state for catalog
-  const [isViscosityDropdownOpen, setIsViscosityDropdownOpen] = useState(false);
-
   const catalogRef = useRef<HTMLDivElement>(null);
   const bookingRef = useRef<HTMLDivElement>(null);
   const contactsRef = useRef<HTMLDivElement>(null);
@@ -366,13 +499,6 @@ export default function App() {
         behavior: "smooth"
       });
     }
-  };
-
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
   };
 
   const selectOilForBooking = (oilName: string) => {
@@ -666,14 +792,14 @@ export default function App() {
           
           {/* Catalog Headers */}
           <div className="text-center max-w-3xl mx-auto mb-8">
-            <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">Каталог и Стоимость Услуг</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-slate-900 tracking-tight">Каталог Масел</h2>
           </div>
 
           {isLoading ? (
             /* Состояние загрузки - красивый анимированный скелетон */
             <div className="py-20 text-center flex flex-col items-center justify-center">
               <div className="w-10 h-10 border-4 border-slate-900 border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="text-slate-500 text-sm font-mono uppercase tracking-wider">Загрузка каталога товаров и цен из prices.csv...</p>
+              <p className="text-slate-500 text-xs font-mono uppercase tracking-widest">Загрузка каталога...</p>
             </div>
           ) : csvError ? (
             /* Состояние ошибки: нет CSV-файла, поврежден или пуст */
@@ -692,315 +818,299 @@ export default function App() {
             </div>
           ) : (
             <>
-              {/* modern Dropdown Menu (Выплывающее меню) AND Filter Pill bar */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 border-b border-slate-200 pb-4">
-                
-                {/* Visual selector label */}
-                <div className="flex items-center gap-2">
-                  <Droplet className="w-5 h-5 text-slate-900" />
-                  <span className="text-sm font-semibold text-slate-700">Быстрый поиск по категориям:</span>
-                </div>
-
-                {/* Interactive Dropdown Button (выплывающее меню) */}
-                <div className="relative">
-                  <button
-                    onClick={() => setIsViscosityDropdownOpen(!isViscosityDropdownOpen)}
-                    className="w-64 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-800 text-sm font-bold flex items-center justify-between transition-all shadow-sm cursor-pointer"
-                  >
-                    <span>
-                      {selectedViscosityFilter === "all" 
-                        ? "Все категории (Показать все)" 
-                        : /W-\d+|0W|5W|10W|15W|20W/.test(selectedViscosityFilter) 
-                          ? `Вязкость: ${selectedViscosityFilter}` 
-                          : selectedViscosityFilter}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 text-slate-950 transition-transform duration-200 ${isViscosityDropdownOpen ? "rotate-180" : ""}`} />
-                  </button>
-
-                  <AnimatePresence>
-                    {isViscosityDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-2xl z-40 overflow-hidden"
-                      >
-                        <div className="py-1">
-                          {viscosities.map((visc) => (
-                            <button
-                              key={visc}
-                              onClick={() => {
-                                setSelectedViscosityFilter(visc);
-                                setIsViscosityDropdownOpen(false);
-                                
-                                // Proactively auto-expand that specific grid if select viscosity filter
-                                if (visc !== "all") {
-                                  setExpandedCategories(prev => ({
-                                    ...prev,
-                                    [visc]: true
-                                  }));
-                                }
-                              }}
-                              className={`w-full text-left px-4 py-3 text-sm transition-colors block ${
-                                selectedViscosityFilter === visc 
-                                  ? "bg-slate-950 text-white font-extrabold" 
-                                  : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                              }`}
-                            >
-                              {visc === "all" 
-                                ? "🌐 Все категории" 
-                                : /W-\d+|0W|5W|10W|15W|20W/.test(visc) 
-                                  ? `🛢️ Shell Helix ${visc}` 
-                                  : `🔧 ${visc}`}
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
+              {/* Custom Modern Brand Select Dropdown */}
+              <div className="max-w-md mx-auto mb-10 text-center relative z-20" ref={brandDropdownRef}>
+                {/* Dropdown Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsBrandDropdownOpen(!isBrandDropdownOpen);
+                    setBrandSearchQuery(""); // Clear search filter on open
+                  }}
+                  className={`w-full min-h-[52px] px-5 py-3 rounded-2xl border transition-all duration-300 text-left flex items-center justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-900/10 ${
+                    selectedBrand 
+                      ? "bg-slate-950 border-slate-950 text-white shadow-md shadow-slate-950/10" 
+                      : "bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-350"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {selectedBrand ? (
+                      <BrandLogo brand={selectedBrand} className="w-6 h-6 border border-white/10" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-md bg-amber-550/10 flex items-center justify-center text-amber-500">
+                        <Droplet className="w-3.5 h-3.5 fill-amber-500/10" />
+                      </div>
                     )}
-                  </AnimatePresence>
-                </div>
+                    <span className="font-extrabold text-sm tracking-wide uppercase font-display select-none">
+                      {selectedBrand || "Выберите бренд масла"}
+                    </span>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? "rotate-180 text-[#FAEC00]" : (selectedBrand ? "text-slate-300" : "text-slate-500")}`} />
+                </button>
 
-                {/* Inline Filter pills for beautiful clickability */}
-                <div className="flex flex-wrap justify-center gap-2">
-                  {viscosities.map((visc) => (
-                    <button
-                      key={visc}
-                      onClick={() => {
-                        setSelectedViscosityFilter(visc);
-                        if (visc !== "all") {
-                          // auto expand inside accordion too
-                          setExpandedCategories(prev => ({
-                            ...prev,
-                            [visc]: true
-                          }));
-                        }
-                      }}
-                      className={`px-4 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-wide cursor-pointer ${
-                        selectedViscosityFilter === visc
-                          ? "bg-slate-950 text-white shadow-sm"
-                          : "bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-955 border border-slate-200"
-                      }`}
+                {/* Dropdown Options Popup */}
+                <AnimatePresence>
+                  {isBrandDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      className="absolute z-30 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden text-left"
                     >
-                      {visc === "all" ? "Показать всё" : visc}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Grid Layout containing Interactive Viscosity Accordions */}
-              <div className="space-y-6">
-                {viscosities.filter(v => v !== "all").map((category) => {
-                  // Filter products matching current CSV category
-                  const categoryProducts = products.filter(p => p.category === category);
-                  
-                  // Skip rendering this accordion block if quick filters select something else
-                  if (selectedViscosityFilter !== "all" && selectedViscosityFilter !== category) {
-                    return null;
-                  }
-
-                  const isOpen = expandedCategories[category] || false;
-
-                  return (
-                    <div 
-                      key={category} 
-                      className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:shadow-md hover:border-slate-350"
-                    >
-                      {/* Accordion Trigger Headband */}
-                      <button
-                        onClick={() => toggleCategory(category)}
-                        className="w-full px-6 py-5 bg-white hover:bg-slate-50/50 flex items-center justify-between gap-4 transition-all block text-left cursor-pointer"
-                      >
-                        <div className="flex items-center gap-4">
-                          {/* Oil droplet tag with viscosity - corrected fixed width to prevent text overflow */}
-                          <div className="px-3 h-11 min-w-[5.25rem] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-900 text-sm font-mono shrink-0">
-                            {category}
-                          </div>
-                          <div>
-                            <h3 className="font-extrabold text-lg text-slate-900 font-display flex items-center gap-2">
-                              {/W-\d+|0W|5W|10W|15W|20W/.test(category) ? `Масла ${category}` : category}
-                            </h3>
-                            <p className="text-xs text-slate-550 mt-1">
-                              {category.toLowerCase().includes("услуг") 
-                                ? `Доступно: ${categoryProducts.length} видов услуг` 
-                                : `В наличии: ${categoryProducts.length} наименований`}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <span className="hidden sm:inline-block text-xs text-slate-555 font-mono font-medium">
-                            {isOpen ? "Свернуть блок" : "Развернуть блок"}
-                          </span>
-                          <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600">
-                            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Collapsible Content wrapper */}
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25, ease: "easeInOut" }}
-                            className="overflow-hidden"
+                      {/* Search Input Box */}
+                      <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
+                        <Search className="w-4 h-4 text-slate-400 shrink-0" />
+                        <input
+                          type="text"
+                          placeholder="Поиск бренда..."
+                          value={brandSearchQuery}
+                          onChange={(e) => setBrandSearchQuery(e.target.value)}
+                          className="w-full bg-transparent border-none text-slate-800 text-xs font-bold leading-none placeholder-slate-400 focus:outline-none py-1.5 font-mono"
+                          autoFocus
+                          onClick={(e) => e.stopPropagation()} // Prevent close
+                        />
+                        {brandSearchQuery && (
+                          <button 
+                            type="button" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setBrandSearchQuery("");
+                            }}
+                            className="text-slate-400 hover:text-slate-600 font-bold text-xs px-1"
                           >
-                            <div className="p-6 border-t border-slate-150 bg-slate-50/20">
-                              
-                              {/* Inner Product Grid cards */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {categoryProducts.map((product) => (
-                                  <div 
-                                    key={product.id}
-                                    className="group rounded-xl bg-white border border-slate-200 hover:border-slate-350 hover:shadow-xl hover:shadow-slate-100/50 transition-all duration-300 p-5 flex flex-col justify-between shadow-xs relative overflow-hidden"
-                                  >
-                                    {/* Top Decorative Glow Hover */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-slate-900/[0.015] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-                                    <div>
-                                      {/* Badges and tags */}
-                                      <div className="flex justify-between items-start gap-2 mb-4">
-                                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono border border-slate-200">
-                                          {product.viscosity}
-                                        </span>
-                                        
-                                        <div className="flex gap-1.5 flex-wrap justify-end">
-                                          {product.attributes.isUltra && (
-                                            <span className="text-[9px] font-bold uppercase tracking-wide bg-slate-950 text-white border border-slate-950 px-1.5 py-0.5 rounded">
-                                              Ultra
-                                            </span>
-                                          )}
-                                          {product.attributes.isSemiSynthetic && (
-                                            <span className="text-[9px] font-bold uppercase tracking-wide bg-slate-100 text-slate-700 border border-slate-200 px-1.5 py-0.5 rounded">
-                                              Полусинтетика
-                                            </span>
-                                          )}
-                                          {product.attributes.isSynthetic && !product.attributes.isUltra && (
-                                            <span className="text-[9px] font-bold uppercase tracking-wide bg-slate-100 text-slate-800 border border-slate-200 px-1.5 py-0.5 rounded">
-                                              Синтетика
-                                            </span>
-                                          )}
-                                          {product.attributes.isDiesel && (
-                                            <span className="text-[9px] font-bold uppercase tracking-wide bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">
-                                              Дизель
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      {/* Oil Canister Bottle Photo Container with 100% original fidelity */}
-                                      {product.image && (
-                                        <div className="relative aspect-square w-full max-w-[170px] mx-auto mb-6 bg-slate-50 rounded-xl flex items-center justify-center p-4 group-hover:scale-[1.03] transition-transform duration-300">
-                                          <InteractiveProductImage 
-                                            src={product.image} 
-                                            alt={product.name}
-                                            className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.11)]"
-                                          />
-                                          {/* Glass reflection effect */}
-                                          <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent pointer-events-none" />
-                                        </div>
-                                      )}
-
-                                      {/* Title name */}
-                                      <h4 className="text-base font-bold text-slate-800 mb-4 line-clamp-2 min-h-[3rem] font-display">
-                                        {product.name}
-                                      </h4>
-
-                                      {/* Pricing Information breakdown */}
-                                      <div className="space-y-2 border-t border-slate-100 pt-4 mb-6">
-                                        <div className="text-xs font-mono tracking-wide uppercase text-slate-400 mb-2 font-semibold">Варианты и цены:</div>
-
-                                        {product.singlePrice !== undefined ? (
-                                          /* Если указана фиксированная одиночная цена */
-                                          <div className="flex justify-between items-center py-1">
-                                            <span className="text-xs text-slate-600 flex items-center gap-1">
-                                              <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />
-                                              Стоимость услуги:
-                                            </span>
-                                            <span className="text-sm font-bold text-slate-950 font-mono">
-                                              {product.singlePrice.toLocaleString('ru-RU')} ₽
-                                            </span>
-                                          </div>
-                                        ) : (product.prices.pour || product.prices.l1 || product.prices.l4) ? (
-                                          /* Если указаны стандартные масляные фасовки */
-                                          <>
-                                            {/* Pour price if exists */}
-                                            {product.prices.pour && (
-                                              <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-105">
-                                                <span className="text-xs text-slate-600 flex items-center gap-1">
-                                                  <div className="w-1.5 h-1.5 rounded-full bg-[#FAEC00]" />
-                                                  На розлив (из бочки / 1л):
-                                                </span>
-                                                <span className="text-sm font-bold text-slate-950 font-mono">
-                                                  {product.prices.pour.toLocaleString('ru-RU')} ₽
-                                                </span>
-                                              </div>
-                                            )}
-
-                                            {/* 1L price */}
-                                            {product.prices.l1 && (
-                                              <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-105">
-                                                <span className="text-xs text-slate-600 flex items-center gap-1">
-                                                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                                  Канистра 1 литр:
-                                                </span>
-                                                <span className="text-sm font-bold text-slate-800 font-mono font-medium">
-                                                  {product.prices.l1.toLocaleString('ru-RU')} ₽
-                                                </span>
-                                              </div>
-                                            )}
-
-                                            {/* 4L price */}
-                                            {product.prices.l4 && (
-                                              <div className="flex justify-between items-center py-1">
-                                                <span className="text-xs text-slate-600 flex items-center gap-1">
-                                                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                                  Канистра 4 литра:
-                                                </span>
-                                                <span className="text-sm font-bold text-slate-800 font-mono font-medium">
-                                                  {product.prices.l4.toLocaleString('ru-RU')} ₽
-                                                </span>
-                                              </div>
-                                            )}
-                                          </>
-                                        ) : (
-                                          /* Обработка ошибок: если цены отсутствуют */
-                                          <div className="flex justify-between items-center py-1">
-                                            <span className="text-xs text-red-500 font-bold flex items-center gap-1">
-                                              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                                              Цена не указана:
-                                            </span>
-                                            <span className="text-sm font-bold text-red-600 font-mono animate-pulse">
-                                              Цена по запросу
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-
-                                    {/* Custom CTA item button */}
-                                    <button
-                                      onClick={() => selectOilForBooking(product.name)}
-                                      className="w-full py-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 hover:bg-slate-950 hover:text-white hover:border-slate-950 font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                                    >
-                                      <span>Выбрать для замены</span>
-                                      <ArrowRight className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
-
-                            </div>
-                          </motion.div>
+                            ×
+                          </button>
                         )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
+                      </div>
+
+                      {/* Brands Option List */}
+                      <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-slate-250">
+                        {(() => {
+                          const filtered = brands.filter(b => 
+                            b.toLowerCase().includes(brandSearchQuery.toLowerCase())
+                          );
+
+                          if (filtered.length === 0) {
+                            return (
+                              <div className="px-4 py-6 text-center text-xs text-slate-400 font-medium">
+                                Брендов не найдено
+                              </div>
+                            );
+                          }
+
+                          return filtered.map((brandName) => {
+                            const isChosen = selectedBrand === brandName;
+                            const count = products.filter(p => p.brand === brandName).length;
+
+                            return (
+                              <button
+                                key={brandName}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedBrand(brandName);
+                                  setIsBrandDropdownOpen(false);
+                                  setBrandSearchQuery("");
+                                  // Smooth scroll down to products listing anchor or slightly below
+                                  setTimeout(() => {
+                                    const element = document.getElementById("brand-results-anchor");
+                                    if (element) {
+                                      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                    }
+                                  }, 100);
+                                }}
+                                className={`w-full px-4 py-3 text-xs font-bold font-display uppercase tracking-wider flex items-center justify-between border-b border-slate-50 last:border-0 transition-colors ${
+                                  isChosen 
+                                    ? "bg-slate-950 text-white" 
+                                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                                }`}
+                              >
+                                <span className="flex items-center gap-2.5 select-none">
+                                  <BrandLogo brand={brandName} className="w-5 h-5" />
+                                  {brandName}
+                                </span>
+                                <span className={`text-[10px] font-mono ${isChosen ? "text-[#FAEC00]" : "text-slate-400"}`}>
+                                  {count} поз.
+                                </span>
+                              </button>
+                            );
+                          });
+                        })()}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+
+              {/* Anchor for results */}
+              <div id="brand-results-anchor" className="scroll-mt-24" />
+
+              {/* Products Area */}
+              <AnimatePresence mode="wait">
+                {selectedBrand !== "" && (
+                  /* Products Present State */
+                  <motion.div
+                    key={selectedBrand}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-6"
+                  >
+                    {/* Header showing active brand */}
+                    {(() => {
+                      const brandProducts = products.filter(p => p.brand === selectedBrand);
+
+                      const groupedMap: { [key: string]: {
+                        baseName: string;
+                        viscosity: string;
+                        attributes: {
+                          isSynthetic?: boolean;
+                          isSemiSynthetic?: boolean;
+                          isUltra?: boolean;
+                          isDiesel?: boolean;
+                        };
+                        volumes: { volume: string; price: number }[];
+                      } } = {};
+
+                      brandProducts.forEach(p => {
+                        const { baseName, volume } = extractVolumeAndBaseName(p.name);
+                        const key = baseName.toLowerCase().replace(/\s+/g, ' ').trim();
+                        const actualPrice = p.singlePrice !== undefined ? p.singlePrice : (p.prices.pour || p.prices.l1 || p.prices.l4 || 0);
+
+                        if (!groupedMap[key]) {
+                          groupedMap[key] = {
+                            baseName,
+                            viscosity: p.viscosity === p.brand ? "" : p.viscosity,
+                            attributes: {
+                              isSynthetic: p.attributes.isSynthetic,
+                              isSemiSynthetic: p.attributes.isSemiSynthetic,
+                              isUltra: p.attributes.isUltra,
+                              isDiesel: p.attributes.isDiesel
+                            },
+                            volumes: []
+                          };
+                        }
+
+                        if (!groupedMap[key].volumes.some(v => v.volume === volume)) {
+                          groupedMap[key].volumes.push({ volume, price: actualPrice });
+                        }
+                      });
+
+                      const volumeOrder: { [key: string]: number } = {
+                        "1л": 1,
+                        "1л розлив": 2,
+                        "розлив": 3,
+                        "4л": 4,
+                        "4+1": 5,
+                        "5л": 6,
+                        "20л": 7,
+                        "60л": 8,
+                        "208л": 9
+                      };
+
+                      const getVolumeOrderScore = (vol: string) => {
+                        const vLower = vol.toLowerCase();
+                        if (volumeOrder[vLower] !== undefined) {
+                          return volumeOrder[vLower];
+                        }
+                        const matchNum = vLower.match(/^(\d+)/);
+                        if (matchNum) {
+                          return parseInt(matchNum[1], 10) * 10 + (vLower.includes("розлив") ? 0.5 : 0);
+                        }
+                        return 999;
+                      };
+
+                      const groupedList = Object.values(groupedMap).map(g => {
+                        g.volumes.sort((a, b) => getVolumeOrderScore(a.volume) - getVolumeOrderScore(b.volume));
+                        return g;
+                      }).sort((a, b) => a.baseName.localeCompare(b.baseName, "ru"));
+
+                      return (
+                        <>
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-4 mb-6">
+                            <div>
+                              <h3 className="text-2xl font-black text-slate-900 font-display flex items-center gap-2">
+                                <span>{selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : `Товары бренда ${selectedBrand}`}</span>
+                                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-mono text-xs font-bold text-slate-650">
+                                  {groupedList.length} наим.
+                                </span>
+                              </h3>
+                            </div>
+
+                            {/* Reset selector link */}
+                            <button 
+                              onClick={() => setSelectedBrand("")}
+                              className="text-xs font-extrabold text-slate-550 hover:text-slate-950 underline underline-offset-4 cursor-pointer transition-colors text-left"
+                            >
+                              Сбросить выбор бренда (Назад)
+                            </button>
+                          </div>
+
+                          {/* List of Grouped Products */}
+                          <div className="space-y-2.5">
+                            {groupedList.map((group, idx) => (
+                              <div 
+                                key={idx}
+                                className="bg-white border border-slate-150 hover:border-slate-350 transition-all duration-200 px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-xs"
+                              >
+                                {/* Name + Badges */}
+                                <div className="space-y-1 sm:max-w-[70%]">
+                                  <div className="flex flex-wrap items-center gap-2.5">
+                                    <h4 className="text-sm sm:text-base font-bold text-[#FAEC00] bg-slate-950 px-2 py-1 rounded-md inline-block font-display tracking-tight leading-snug hover:scale-[1.01] transition-transform">
+                                      {group.baseName}
+                                    </h4>
+                                    
+
+
+                                    {/* Attributes Badges */}
+                                    <div className="flex gap-1 flex-wrap">
+                                      {group.attributes.isUltra && (
+                                        <span className="text-[9px] font-mono font-bold uppercase bg-[#FAEC00] text-slate-950 px-1.5 py-0.5 rounded">
+                                          Ultra
+                                        </span>
+                                      )}
+                                      {group.attributes.isSemiSynthetic && (
+                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-50 text-slate-600 border border-slate-150 px-1.5 py-0.5 rounded">
+                                          Полусинтетика
+                                        </span>
+                                      )}
+                                      {group.attributes.isSynthetic && !group.attributes.isUltra && (
+                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-50 text-slate-800 border border-slate-150 px-1.5 py-0.5 rounded">
+                                          Синтетика
+                                        </span>
+                                      )}
+                                      {group.attributes.isDiesel && (
+                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-100 text-slate-650 px-1.5 py-0.5 rounded">
+                                          Дизель
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Volume & Price list formatted clearly */}
+                                <div className="flex flex-col sm:items-end justify-center shrink-0">
+                                  <ul className="space-y-1 sm:space-y-0.5 text-right sm:text-right">
+                                    {group.volumes.map((v, vIdx) => (
+                                      <li key={vIdx} className="flex sm:justify-end items-center gap-2 text-xs sm:text-sm font-mono text-slate-800 leading-none">
+                                        <span className="text-[#FAEC00] font-bold select-none text-[14px]">•</span>
+                                        <span className="text-slate-550 capitalize-first">{v.volume}</span>
+                                        <span className="text-slate-300">—</span>
+                                        <span className="font-extrabold text-slate-900">{v.price.toLocaleString('ru-RU')} ₽</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </>
           )}
 
@@ -1042,7 +1152,6 @@ export default function App() {
                   <div>
                     <div className="text-xs text-slate-500 uppercase tracking-widest font-mono font-bold">Адрес</div>
                     <div className="text-sm font-bold text-slate-800 mt-1">{CONTACTS.address}</div>
-                    <span className="text-[10px] text-slate-500 block mt-1">Ориентир — въезд рядом с промышленной зоной.</span>
                   </div>
                 </div>
 
@@ -1054,7 +1163,6 @@ export default function App() {
                   <div>
                     <div className="text-xs text-slate-500 uppercase tracking-widest font-mono font-bold">Режим работы</div>
                     <div className="text-sm font-bold text-slate-800 mt-1">Ежедневно: 9:00 – 19:00</div>
-                    <span className="text-[10px] text-slate-500 block mt-1">Мастера работают ежедневно без перерыва на обед.</span>
                   </div>
                 </div>
 
@@ -1098,9 +1206,6 @@ export default function App() {
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                     <span>Адрес СТО: {CONTACTS.address}</span>
                   </div>
-                  <p className="text-slate-500 leading-normal text-[11px]">
-                    Калининград, ул. Суворова, 54У. Ориентир — въезд рядом с промышленной зоной.
-                  </p>
                 </div>
               </div>
             </div>
@@ -1110,62 +1215,10 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer block - No credit line, pure ownership, clean columns */}
-      <footer className="bg-slate-50 text-slate-600 py-6 border-t border-slate-200 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200">
-            
-            {/* Logo frame */}
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-500">
-                <Droplet className="w-5 h-5 text-slate-950 fill-current" />
-              </div>
-              <div>
-                <span className="text-slate-900 font-extrabold text-base font-display">ПроМасло</span>
-                <span className="text-[10px] text-slate-500 ml-2 tracking-wider font-mono">Калининград</span>
-              </div>
-            </div>
-
-            {/* Nav footer */}
-            <div className="flex flex-wrap justify-center gap-6">
-              <button 
-                onClick={() => handleScrollTo(catalogRef)}
-                className="hover:text-slate-900 transition-colors cursor-pointer font-medium"
-              >
-                Каталог
-              </button>
-              <button 
-                onClick={() => handleScrollTo(bookingRef)}
-                className="hover:text-slate-900 transition-colors cursor-pointer font-medium"
-              >
-                Запись онлайн
-              </button>
-              <button 
-                onClick={() => handleScrollTo(contactsRef)}
-                className="hover:text-slate-900 transition-colors cursor-pointer font-medium"
-              >
-                Контакты
-              </button>
-            </div>
-
-            {/* Quick call info */}
-            <div className="text-center md:text-right flex flex-col items-center md:items-end">
-              <a 
-                href={`tel:${CONTACTS.phones[0].value}`}
-                className="text-slate-900 hover:text-amber-600 font-bold text-sm transition-colors whitespace-nowrap"
-              >
-                {CONTACTS.phones[0].display}
-              </a>
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1 whitespace-nowrap">
-                <Clock className="w-3" />
-                <span>Ежедневно: 9:00 – 19:00</span>
-              </div>
-            </div>
-
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+      {/* Footer block - Clean minimal copyright line */}
+      <footer className="bg-slate-50 text-slate-500 py-6 border-t border-slate-200/80 text-xs text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
             <div>
               © {new Date().getFullYear()} ПроМасло Калининград. Все права защищены. {CONTACTS.owner}
             </div>
@@ -1173,7 +1226,6 @@ export default function App() {
               Разработано в соответствии с высокими стандартами качества обслуживания автотранспорта
             </div>
           </div>
-
         </div>
       </footer>
 
