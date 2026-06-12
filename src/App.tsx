@@ -447,9 +447,11 @@ export default function App() {
         setIsLoading(true);
         setCsvError(null);
         
-        const response = await fetch("/prices.csv");
+        const base = import.meta.env.BASE_URL || "/";
+        const csvUrl = base.endsWith("/") ? `${base}prices.csv` : `${base}/prices.csv`;
+        const response = await fetch(csvUrl);
         if (!response.ok) {
-          throw new Error(`Не удалось найти файл цен (prices.csv) по адресу /prices.csv. Статус: ${response.status}`);
+          throw new Error(`Не удалось найти файл цен (prices.csv) по адресу ${csvUrl}. Статус: ${response.status}`);
         }
         
         const text = await response.text();

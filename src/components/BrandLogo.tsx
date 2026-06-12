@@ -44,10 +44,15 @@ export default function BrandLogo({ brand, className = "w-6 h-6" }: BrandLogoPro
   }
 
   if (matchedLogoUrl) {
+    const base = import.meta.env.BASE_URL || "/";
+    const logoSrc = matchedLogoUrl.startsWith("/")
+      ? (base.endsWith("/") ? `${base}${matchedLogoUrl.slice(1)}` : `${base}${matchedLogoUrl}`)
+      : (base.endsWith("/") ? `${base}${matchedLogoUrl}` : `${base}/${matchedLogoUrl}`);
+
     return (
       <div className={`relative shrink-0 flex items-center justify-center bg-white rounded-md overflow-hidden ${className} shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-slate-200/50 p-1`}>
         <img
-          src={matchedLogoUrl}
+          src={logoSrc}
           alt={brand}
           className="w-full h-full object-contain pointer-events-none"
           referrerPolicy="no-referrer"
