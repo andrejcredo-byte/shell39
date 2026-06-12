@@ -837,9 +837,9 @@ export default function App() {
                 >
                   <div className="flex items-center gap-3">
                     {selectedBrand ? (
-                      <BrandLogo brand={selectedBrand} className="w-6 h-6 border border-white/10" />
+                      <BrandLogo brand={selectedBrand} className="w-14 h-7 border border-white/10" />
                     ) : (
-                      <div className="w-6 h-6 rounded-md bg-amber-550/10 flex items-center justify-center text-amber-500">
+                      <div className="w-10 h-7 rounded-lg bg-amber-550/10 flex items-center justify-center text-amber-500 border border-amber-550/20">
                         <Droplet className="w-3.5 h-3.5 fill-amber-500/10" />
                       </div>
                     )}
@@ -927,9 +927,9 @@ export default function App() {
                                     : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
                                 }`}
                               >
-                                <span className="flex items-center gap-2.5 select-none">
-                                  <BrandLogo brand={brandName} className="w-5 h-5" />
-                                  {brandName}
+                                <span className="flex items-center gap-3 select-none text-left">
+                                  <BrandLogo brand={brandName} className="w-14 h-7 border border-slate-200" />
+                                  <span>{brandName}</span>
                                 </span>
                                 <span className={`text-[10px] font-mono ${isChosen ? "text-[#FAEC00]" : "text-slate-400"}`}>
                                   {count} поз.
@@ -1030,22 +1030,26 @@ export default function App() {
 
                       return (
                         <>
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-4 mb-6">
-                            <div>
-                              <h3 className="text-2xl font-black text-slate-900 font-display flex items-center gap-2">
-                                <span>{selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : `Товары бренда ${selectedBrand}`}</span>
-                                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-mono text-xs font-bold text-slate-650">
-                                  {groupedList.length} наим.
-                                </span>
-                              </h3>
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-gradient-to-r from-slate-50 to-white border border-slate-200/40 rounded-3xl p-6 shadow-xs mb-8">
+                            <div className="flex items-center gap-5">
+                              <BrandLogo brand={selectedBrand} className="w-24 h-12 shadow-md border border-slate-250/30" />
+                              <div className="text-left">
+                                <div className="text-[10px] uppercase font-mono tracking-widest text-[#94A3B8] font-bold mb-1">Выбранный бренд</div>
+                                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-display flex items-center gap-3 leading-none">
+                                  <span>{selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : selectedBrand}</span>
+                                  <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 font-mono text-xs font-extrabold text-slate-650">
+                                    {groupedList.length} наим.
+                                  </span>
+                                </h3>
+                              </div>
                             </div>
 
                             {/* Reset selector link */}
                             <button 
                               onClick={() => setSelectedBrand("")}
-                              className="text-xs font-extrabold text-slate-550 hover:text-slate-950 underline underline-offset-4 cursor-pointer transition-colors text-left"
+                              className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-black text-slate-700 hover:text-slate-950 cursor-pointer transition-all active:scale-[0.98] flex items-center gap-2 shadow-xs self-start md:self-auto"
                             >
-                              Сбросить выбор бренда (Назад)
+                              <span>←</span> Назад к выбору
                             </button>
                           </div>
 

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="100%" height="100%">
+      <rect width="100%" height="100%" fill="transparent"/>
+      <g transform="translate(20, 20)">
+        <text x="0" y="32" font-family="'Inter', sans-serif" font-weight="950" font-size="34" fill="#1E293B" font-style="italic">
+          <tspan fill="#EF2329">Z</tspan>
+          <tspan fill="#FAEC00">I</tspan>
+          <tspan fill="#0284C7">C</tspan>
+        </text>
+        <rect x="0" y="42" width="65" height="4" fill="#EF2329" />
+      </g>
+    </svg>

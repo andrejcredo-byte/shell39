@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" width="100%" height="100%">
+      <rect width="100%" height="100%" fill="transparent"/>
+      <g transform="translate(10, 10)">
+        <circle cx="40" cy="40" r="30" fill="none" stroke="#EF2329" stroke-width="8" />
+        <path d="M40,10 A30,30 0 0,1 70,40" fill="none" stroke="#FAEC00" stroke-width="8" />
+        <path d="M70,40 A30,30 0 0,1 40,70" fill="none" stroke="#10B981" stroke-width="8" />
+        <path d="M40,70 A30,30 0 0,1 10,40" fill="none" stroke="#3B82F6" stroke-width="8" />
+        <text x="85" y="48" font-family="'Inter', sans-serif" font-weight="800" font-size="24" fill="#1E293B">TotalEnergies</text>
+      </g>
+    </svg>

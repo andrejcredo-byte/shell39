@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" width="100%" height="100%">
+      <rect width="100%" height="100%" fill="transparent"/>
+      <g transform="translate(10, 15)">
+        <text x="0" y="38" font-family="'Inter', sans-serif" font-weight="900" font-size="38" font-style="italic" fill="#0F172A">
+          <tspan fill="#EA580C">G-</tspan>ENERGY
+        </text>
+        <path d="M0,45 L180,45 L190,52 L10,52 Z" fill="#EA580C" />
+      </g>
+    </svg>
