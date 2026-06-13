@@ -46,7 +46,7 @@ function servePricesCsvPlugin() {
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: '/',
     plugins: [react(), tailwindcss(), servePricesCsvPlugin()],
     resolve: {
       alias: {

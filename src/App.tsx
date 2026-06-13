@@ -10,7 +10,11 @@ import {
   X, 
   ArrowRight,
   AlertTriangle,
-  Search
+  Search,
+  Send,
+  Instagram,
+  MessageCircle,
+  Share2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { CONTACTS } from "./data";
@@ -510,10 +514,12 @@ export default function App() {
 
   
     return (
-    <div className="min-h-screen bg-white font-sans text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen bg-transparent font-sans text-slate-900 antialiased selection:bg-slate-950 selection:text-white relative">
+      {/* Viewport-fixed background gradient that stays dynamic as the user scrolls */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#FFF5D1] via-[#FFD25A] via-[#FFAE00] to-[#E28500] pointer-events-none" />
       
       {/* Header Bar */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/60 shadow-xs relative">
+      <header className="sticky top-0 z-50 bg-[#FFF9E6]/95 backdrop-blur-md border-b border-amber-500/30 shadow-xs relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo Brand Frame */}
@@ -522,22 +528,22 @@ export default function App() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-4">
             <button 
               onClick={() => handleScrollTo(catalogRef)}
-              className="text-slate-600 hover:text-slate-950 text-sm font-semibold transition-colors cursor-pointer"
+              className="text-slate-700 hover:text-amber-950 hover:bg-amber-500/10 px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               Каталог масел
             </button>
             <button 
               onClick={() => handleScrollTo(bookingRef)}
-              className="text-slate-600 hover:text-slate-950 text-sm font-semibold transition-colors cursor-pointer"
+              className="text-slate-700 hover:text-amber-950 hover:bg-amber-500/10 px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               Запись на замену
             </button>
             <button 
               onClick={() => handleScrollTo(contactsRef)}
-              className="text-slate-600 hover:text-slate-950 text-sm font-semibold transition-colors cursor-pointer"
+              className="text-slate-700 hover:text-amber-950 hover:bg-amber-500/10 px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               Контакты
             </button>
@@ -548,19 +554,19 @@ export default function App() {
             <div className="text-right flex flex-col items-end">
               <a 
                 href={`tel:${CONTACTS.phones[0].value}`}
-                className="group flex items-center gap-1.5 text-base font-black text-slate-950 hover:text-emerald-600 transition-colors cursor-pointer"
+                className="group flex items-center gap-1.5 text-base font-black text-slate-950 hover:text-[#E28500] transition-colors cursor-pointer"
               >
-                <Phone className="w-4 h-4 text-emerald-600 fill-emerald-600 shrink-0 group-hover:scale-110 transition-transform" />
+                <Phone className="w-4 h-4 text-[#E28500] fill-[#E28500] shrink-0 group-hover:scale-110 transition-transform" />
                 <span>+7 (4012) 900-079</span>
               </a>
-              <div className="flex items-center gap-2.5 text-[11px] text-slate-500 mt-1 justify-end flex-wrap">
+              <div className="flex items-center gap-2.5 text-[11px] text-amber-950/60 mt-1 justify-end flex-wrap">
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-amber-900/40 shrink-0" />
                   <span>{CONTACTS.address}</span>
                 </div>
-                <span className="text-slate-300">•</span>
+                <span className="text-amber-300">•</span>
                 <div className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <Clock className="w-3.5 h-3.5 text-amber-900/40 shrink-0" />
                   <span>Ежедневно: 9:00 – 19:00</span>
                 </div>
               </div>
@@ -578,16 +584,16 @@ export default function App() {
             {/* Clickable phone number for mobile */}
             <a 
               href="tel:+74012900079"
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200/80 active:bg-slate-100 rounded-xl text-sm font-black text-slate-950 transition-all cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.02)] select-none"
+              className="flex items-center gap-1.5 px-3 py-2 bg-amber-500/15 border border-amber-500/30 active:bg-amber-500/30 rounded-xl text-sm font-black text-amber-955 transition-all cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.02)] select-none"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-600 fill-emerald-600 shrink-0" />
-              <span className="font-mono tracking-tight text-slate-900 leading-none">900-079</span>
+              <Phone className="w-3.5 h-3.5 text-amber-600 fill-amber-600 shrink-0" />
+              <span className="font-mono tracking-tight text-amber-950 leading-none">900-079</span>
             </a>
 
             {/* Mobile Menu Trigger */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-600 hover:text-slate-950 hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all cursor-pointer"
+              className="p-2 rounded-xl text-amber-950 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20 transition-all cursor-pointer"
               aria-label="Иконка меню"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -603,46 +609,46 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.18, ease: "easeOut" }}
-              className="absolute left-0 right-0 top-full z-40 md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-4 shadow-xl"
+              className="absolute left-0 right-0 top-full z-45 md:hidden bg-[#FFF9E6] border-b border-amber-500/30 px-4 pt-2 pb-6 space-y-4 shadow-xl"
             >
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <button 
                   onClick={() => handleScrollTo(catalogRef)}
-                  className="block w-full text-left px-4 py-3 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-50 transition-colors text-base font-semibold"
+                  className="block w-full text-left px-4 py-3 rounded-xl text-amber-955 hover:text-slate-950 hover:bg-amber-500/15 active:bg-amber-500/20 transition-all text-base font-extrabold"
                 >
                   Каталог масел
                 </button>
                 <button 
                   onClick={() => handleScrollTo(bookingRef)}
-                  className="block w-full text-left px-4 py-3 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-50 transition-colors text-base font-semibold"
+                  className="block w-full text-left px-4 py-3 rounded-xl text-amber-955 hover:text-slate-950 hover:bg-amber-500/15 active:bg-amber-500/20 transition-all text-base font-extrabold"
                 >
                   Запись на замену
                 </button>
                 <button 
                   onClick={() => handleScrollTo(contactsRef)}
-                  className="block w-full text-left px-4 py-3 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-50 transition-colors text-base font-semibold"
+                  className="block w-full text-left px-4 py-3 rounded-xl text-amber-955 hover:text-slate-950 hover:bg-amber-500/15 active:bg-amber-500/20 transition-all text-base font-extrabold"
                 >
                   Контакты
                 </button>
               </div>
 
-              <div className="border-t border-slate-200 pt-4 px-4 space-y-3">
+              <div className="border-t border-amber-500/15 pt-4 px-4 space-y-3">
                 <div className="space-y-1">
                   {CONTACTS.phones.map((phone, idx) => (
                     <a 
                       key={idx}
                       href={`tel:${phone.value}`}
-                      className="block text-base font-bold text-slate-950 font-display"
+                      className="block text-base font-bold text-slate-950 font-display hover:text-amber-600 transition-colors"
                     >
                       {phone.display}
                     </a>
                   ))}
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-1">
-                    <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <div className="flex items-center gap-1.5 text-xs text-amber-900/60 pt-1">
+                    <Clock className="w-3.5 h-3.5 text-amber-800/40 shrink-0" />
                     <span>Ежедневно 9:00 – 19:00</span>
                   </div>
-                  <div className="flex items-start gap-1.5 text-xs text-slate-500 pt-1">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-1.5 text-xs text-amber-900/60 pt-1">
+                    <MapPin className="w-3.5 h-3.5 text-amber-800/40 shrink-0 mt-0.5" />
                     <span>{CONTACTS.address}</span>
                   </div>
                 </div>
@@ -660,17 +666,10 @@ export default function App() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-8 md:py-14 bg-white">
-        {/* Background Image & Overlay */}
+      <section className="relative overflow-hidden py-8 md:py-14 bg-transparent">
+        {/* Clean Background with Subtle Ambient Soft Radial Highlight */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://static.tildacdn.com/tild3137-3037-4435-b836-396233663736/photo_54430522040313.jpg" 
-            alt="Автосервис замена масел в Калининграде"
-            className="w-full h-full object-cover object-center opacity-15 scale-105 filter blur-[1px]"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-white" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.05)_0%,transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.35)_0%,transparent_75%)]" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -685,7 +684,7 @@ export default function App() {
                   href="https://yandex.ru/maps/org/promaslo/25579278228/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-[160px] min-w-[160px] max-w-[160px] h-[50px] shrink-0 rounded-xl bg-[#F5F5F5] p-2 flex flex-col justify-between text-left select-none cursor-pointer transition-all hover:bg-neutral-200/60 active:scale-95 duration-150 relative border border-transparent"
+                  className="w-[160px] min-w-[160px] max-w-[160px] h-[50px] shrink-0 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/50 p-2 flex flex-col justify-between text-left select-none cursor-pointer transition-all hover:bg-white hover:border-amber-400 active:scale-95 duration-150 relative"
                 >
                   {/* First Row */}
                   <div className="flex items-center justify-between w-full">
@@ -718,7 +717,7 @@ export default function App() {
                   href="https://2gis.ru/kaliningrad/firm/70000001043806096"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-[160px] min-w-[160px] max-w-[160px] h-[50px] shrink-0 rounded-xl bg-[#F5F5F5] p-2 flex flex-col justify-between text-left select-none cursor-pointer transition-all hover:bg-neutral-200/60 active:scale-95 duration-150 relative border border-transparent"
+                  className="w-[160px] min-w-[160px] max-w-[160px] h-[50px] shrink-0 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/50 p-2 flex flex-col justify-between text-left select-none cursor-pointer transition-all hover:bg-white hover:border-amber-400 active:scale-95 duration-150 relative"
                 >
                   {/* First Row */}
                   <div className="flex items-center justify-between w-full">
@@ -747,45 +746,50 @@ export default function App() {
                 </a>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black font-display leading-tight text-slate-950 tracking-tight">
-                Замена моторного масла <br className="hidden sm:inline" />
-                в Калининграде
-              </h1>
+              {/* Elegant Frosted Glass Container to emphasize text readability over the golden background */}
+              <div className="relative w-full py-8 px-6 sm:px-12 md:py-12 rounded-3xl bg-white/45 backdrop-blur-md shadow-lg border border-white/60 flex flex-col items-center space-y-5 overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
 
-              <p className="text-slate-650 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-normal">
-                Быстро, надежно и по честным ценам. Наша основная миссия – продлить жизнь вашему двигателю с помощью оригинальных заграничных масел <strong className="font-bold text-slate-950">Shell Helix</strong>.
-              </p>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black font-display leading-tight text-slate-950 tracking-tight relative z-10">
+                  Замена моторного масла <br className="hidden sm:inline" />
+                  в Калининграде
+                </h1>
+
+                <p className="text-slate-955 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-semibold relative z-10">
+                  Быстро, надежно и по честным ценам. Наша основная миссия – продлить жизнь вашему двигателю с помощью оригинальных масел от известных и надёжных брендов.
+                </p>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
                 <button
                   onClick={() => handleScrollTo(bookingRef)}
-                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-base transition-all duration-300 hover:shadow-md hover:shadow-slate-950/15 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-base transition-all duration-300 hover:shadow-md hover:shadow-slate-950/15 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer relative z-10"
                 >
                   Записаться онлайн
                   <ArrowRight className="w-5 h-5 text-white" />
                 </button>
                 <button
                   onClick={() => handleScrollTo(catalogRef)}
-                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-250 font-bold text-base transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/80 backdrop-blur-xs hover:bg-white text-slate-900 border border-amber-300/40 font-bold text-base transition-all flex items-center justify-center gap-2 cursor-pointer relative z-10"
                 >
                   Открыть каталог
                 </button>
               </div>
 
               {/* Fast Statistics Labeling */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-5 border-t border-slate-200 w-full max-w-md mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 py-5 border-t border-b border-slate-950 w-full max-w-md mx-auto">
                 <div>
                   <div className="text-2xl font-black font-display text-slate-950">20 мин</div>
-                  <div className="text-xs text-slate-500">Среднее время замены</div>
+                  <div className="text-xs font-semibold text-slate-800">Среднее время замены</div>
                 </div>
                 <div>
                   <div className="text-2xl font-black font-display text-slate-950">100%</div>
-                  <div className="text-xs text-slate-500">Оригинальное масло</div>
+                  <div className="text-xs font-semibold text-slate-800">Оригинальное масло</div>
                 </div>
-                <div className="col-span-2 md:col-span-1">
+                <div className="col-span-2 md:col-span-1 border-t border-slate-950/10 md:border-t-0 pt-2 md:pt-0">
                   <div className="text-2xl font-black font-display text-slate-950">30%</div>
-                  <div className="text-xs text-slate-500">Экономия на розливе</div>
+                  <div className="text-xs font-semibold text-slate-800">Экономия на розливе</div>
                 </div>
               </div>
             </div>
@@ -794,10 +798,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* Main Catalog Section - With Dropdown selector and collapsible categories */}
-      {/* ГДЕ СТРОИТСЯ КАТАЛОГ: Разметка ниже динамически строит каталог на основе загруженных из CSV данных */}
-      <section ref={catalogRef} id="catalog" className="py-10 bg-white border-y border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Main Catalog Section - Integrated smoothly with the gold background */}
+      <section ref={catalogRef} id="catalog" className="py-12 bg-transparent relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* Catalog Headers */}
           <div className="text-center max-w-3xl mx-auto mb-8">
@@ -836,28 +839,28 @@ export default function App() {
                     setIsBrandDropdownOpen(!isBrandDropdownOpen);
                     setBrandSearchQuery(""); // Clear search filter on open
                   }}
-                  className={`w-full min-h-[50px] px-4.5 py-3 rounded-xl border transition-all duration-300 text-left flex items-center justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-900/10 ${
+                  className={`w-full min-h-[50px] px-4.5 py-3 rounded-xl border transition-all duration-300 text-left flex items-center justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/20 ${
                     selectedBrand 
-                      ? "bg-white border-slate-900 text-slate-900 shadow-sm" 
-                      : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100/50 hover:border-slate-350"
+                      ? "bg-white/95 border-amber-505 text-slate-950 shadow-md font-extrabold" 
+                      : "bg-[#FFF9E6]/95 border-amber-300/80 text-slate-900 hover:bg-white hover:border-amber-500 shadow-sm"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     {selectedBrand ? (
                       <div className="flex items-center gap-2">
-                        <BrandLogo brand={selectedBrand} className="w-10 h-5 border border-slate-100 bg-white shrink-0 object-contain rounded" />
-                        <span className="text-slate-400 text-xs font-mono select-none">Бренд:</span>
+                        <BrandLogo brand={selectedBrand} className="w-10 h-5 border border-amber-200 bg-white shrink-0 object-contain rounded" />
+                        <span className="text-amber-900 text-xs font-mono select-none">Бренд:</span>
                       </div>
                     ) : (
-                      <div className="w-7 h-5 rounded bg-slate-200/50 flex items-center justify-center text-slate-500 shrink-0">
-                        <Search className="w-3 h-3" />
+                      <div className="w-7 h-5 rounded bg-amber-500/20 flex items-center justify-center text-amber-955 shrink-0">
+                        <Search className="w-3 h-3 text-amber-955" />
                       </div>
                     )}
-                    <span className="font-bold text-xs tracking-wide uppercase font-display select-none">
+                    <span className="font-extrabold text-xs tracking-wide uppercase font-display select-none">
                       {selectedBrand || "Другие бренды масел из списка"}
                     </span>
                   </div>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? "rotate-180 text-slate-900" : "text-slate-400"}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? "rotate-180 text-slate-950" : "text-amber-900/60"}`} />
                 </button>
 
                 {/* Dropdown Options Popup */}
@@ -868,17 +871,17 @@ export default function App() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.98 }}
                       transition={{ duration: 0.18, ease: "easeOut" }}
-                      className="absolute z-30 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden text-left"
+                      className="absolute z-30 left-0 right-0 mt-2 bg-[#FFF9E6] border border-amber-500/30 rounded-xl shadow-xl overflow-hidden text-left"
                     >
                       {/* Search Input Box */}
-                      <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                        <Search className="w-4 h-4 text-slate-400 shrink-0" />
+                      <div className="p-3 border-b border-amber-500/15 bg-amber-500/5 flex items-center gap-2">
+                        <Search className="w-4 h-4 text-amber-900 shrink-0" />
                         <input
                           type="text"
                           placeholder="Поиск бренда..."
                           value={brandSearchQuery}
                           onChange={(e) => setBrandSearchQuery(e.target.value)}
-                          className="w-full bg-transparent border-none text-slate-800 text-xs font-bold leading-none placeholder-slate-400 focus:outline-none py-1.5 font-mono"
+                          className="w-full bg-transparent border-none text-slate-900 text-xs font-black leading-none placeholder-amber-900/40 focus:outline-none py-1.5 font-mono"
                           autoFocus
                           onClick={(e) => e.stopPropagation()} // Prevent close
                         />
@@ -889,7 +892,7 @@ export default function App() {
                               e.stopPropagation();
                               setBrandSearchQuery("");
                             }}
-                            className="text-slate-400 hover:text-slate-600 font-bold text-xs px-1"
+                            className="text-amber-905 hover:text-red-600 font-bold text-xs px-1"
                           >
                             ×
                           </button>
@@ -897,15 +900,15 @@ export default function App() {
                       </div>
 
                       {/* Brands Option List */}
-                      <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-slate-250">
+                      <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-amber-300">
                         {(() => {
                            const filtered = brands.filter(b => 
                             b.toLowerCase().includes(brandSearchQuery.toLowerCase())
-                          );
+                           );
 
                            if (filtered.length === 0) {
                              return (
-                               <div className="px-4 py-6 text-center text-xs text-slate-400 font-medium">
+                               <div className="px-4 py-6 text-center text-xs text-amber-950/70 font-bold">
                                  Брендов не найдено
                                </div>
                              );
@@ -931,17 +934,17 @@ export default function App() {
                                      }
                                    }, 100);
                                  }}
-                                 className={`w-full px-4 py-2.5 text-xs font-bold font-display uppercase tracking-wider flex items-center justify-between border-b border-slate-50 last:border-0 transition-colors ${
+                                 className={`w-full px-4 py-2.5 text-xs font-bold font-display uppercase tracking-wider flex items-center justify-between border-b border-amber-500/5 last:border-0 transition-all ${
                                    isChosen 
-                                     ? "bg-slate-900 text-white" 
-                                     : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                                     ? "bg-slate-950 text-white shadow-xs" 
+                                     : "text-slate-800 hover:bg-amber-400/25 hover:text-slate-955"
                                  }`}
                                >
                                  <span className="flex items-center gap-3 select-none text-left">
-                                   <BrandLogo brand={brandName} className="w-10 h-5 border border-slate-100 bg-white rounded" />
+                                   <BrandLogo brand={brandName} className="w-10 h-5 border border-amber-200 bg-white rounded object-contain" />
                                    <span>{brandName}</span>
                                  </span>
-                                 <span className={`text-[10px] font-mono ${isChosen ? "text-amber-400" : "text-slate-400"}`}>
+                                 <span className={`text-[10px] font-mono font-extrabold ${isChosen ? "text-amber-400" : "text-amber-900/60"}`}>
                                    {count} шт.
                                  </span>
                                </button>
@@ -956,7 +959,7 @@ export default function App() {
 
               {/* Popular Brands Selection */}
               <div className="max-w-2xl mx-auto mb-10 text-center">
-                <span className="text-[10px] sm:text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest block mb-3.5 select-none text-center">
+                <span className="text-[10px] sm:text-[11px] font-mono font-bold text-amber-950 uppercase tracking-widest block mb-3.5 select-none text-center">
                   Популярные бренды для быстрой замены:
                 </span>
                 <div className="flex flex-wrap justify-center items-center gap-2 px-2">
@@ -980,8 +983,8 @@ export default function App() {
                         }}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold font-display uppercase tracking-wider transition-all duration-250 cursor-pointer ${
                           isSelected
-                            ? "bg-slate-900 border-slate-900 text-white shadow-sm"
-                            : "bg-white border-slate-200 text-slate-650 hover:border-slate-400 hover:text-slate-950"
+                            ? "bg-slate-950 border-slate-950 text-white shadow-md scale-102"
+                            : "bg-white/70 backdrop-blur-xs border-amber-300/60 text-slate-800 hover:bg-white hover:border-amber-500 hover:text-slate-950"
                         }`}
                       >
                         <BrandLogo brand={brandName} className="w-8 h-4 rounded-sm bg-white shrink-0 object-contain" />
@@ -998,14 +1001,14 @@ export default function App() {
               {/* Products Area */}
               <AnimatePresence mode="wait">
                 {selectedBrand !== "" ? (
-                  /* Products Present State */
+                  /* Products Present State - Framed inside an elegant luxury white frosted tile card */
                   <motion.div
                     key={selectedBrand}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.25 }}
-                    className="space-y-4"
+                    className="bg-white/80 backdrop-blur-md border border-white/80 rounded-3xl p-5 sm:p-8 shadow-lg space-y-4"
                   >
                     {/* Header showing active brand */}
                     {(() => {
@@ -1079,7 +1082,7 @@ export default function App() {
                       return (
                         <>
                           {/* Ultra Clean Info Row instead of heavy banners */}
-                          <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                          <div className="flex items-center justify-between border-b border-amber-950/10 pb-3 mb-4">
                             <div className="flex items-center gap-2">
                               <h3 className="text-sm font-bold text-slate-900 font-display uppercase tracking-wider">
                                 {selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : selectedBrand}
@@ -1101,7 +1104,7 @@ export default function App() {
                             {groupedList.map((group, idx) => (
                               <div 
                                 key={idx}
-                                className="py-2.5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 transition-colors hover:bg-slate-50/40 px-1 rounded"
+                                className="py-2.5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 transition-colors hover:bg-slate-100/30 px-1 rounded"
                               >
                                 {/* Left side: Name + tags */}
                                 <div className="space-y-0.5 sm:max-w-[70%]">
@@ -1162,10 +1165,10 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.25 }}
-                    className="text-center py-12 px-4 max-w-md mx-auto border border-dashed border-slate-200 rounded-2xl bg-slate-50/40"
+                    className="text-center py-12 px-4 max-w-md mx-auto border border-dashed border-amber-955/20 rounded-2xl bg-white/45 backdrop-blur-xs"
                   >
-                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
-                      <Droplet className="w-4.5 h-4.5 animate-pulse text-amber-500" />
+                    <div className="w-10 h-10 rounded-full bg-amber-955/5 flex items-center justify-center mx-auto mb-3 text-amber-900 border border-amber-955/10">
+                      <Droplet className="w-4.5 h-4.5 animate-pulse text-amber-600" />
                     </div>
                     <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-1 font-display">Каталог не выбран</h3>
                     <p className="text-[11px] text-slate-500 max-w-xs mx-auto leading-relaxed">
@@ -1181,16 +1184,13 @@ export default function App() {
       </section>
 
       {/* Booking Form (Запись на замену масла) */}
-      <section ref={bookingRef} id="booking" className="py-12 bg-slate-50 border-b border-slate-200">
+      <section ref={bookingRef} id="booking" className="py-14 bg-transparent">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           
           <div className="text-center mb-6 space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 font-display uppercase tracking-wider">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-950 font-display uppercase tracking-wider">
               Онлайн-запись на замену масла
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
-              Выберите удобную дату и время обслуживания в автосервисе ПроМасло в Калининграде.
-            </p>
           </div>
 
           <div className="p-1 sm:p-2 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-150/50 relative overflow-hidden h-[710px] flex flex-col">
@@ -1205,52 +1205,52 @@ export default function App() {
       </section>
 
       {/* Contacts Block (Адрес, часы работы, интерактивное табло, ГИС ссылки) */}
-      <section ref={contactsRef} id="contacts" className="py-10 bg-white">
+      <section ref={contactsRef} id="contacts" className="py-14 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Contacts details column */}
-            <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-10 xl:col-span-5 space-y-4 flex flex-col justify-between">
               
               {/* Icon cards blocks */}
               <div className="space-y-4">
                 
                 {/* ContactItem 1: Address */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-4 transition-all hover:border-slate-200">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex items-start gap-4 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-widest font-mono font-bold">Адрес</div>
-                    <div className="text-sm font-bold text-slate-800 mt-1">{CONTACTS.address}</div>
+                    <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Адрес</div>
+                    <div className="text-sm font-black text-slate-900 mt-1">{CONTACTS.address}</div>
                   </div>
                 </div>
 
                 {/* ContactItem 2: Working Hours */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-4 transition-all hover:border-slate-200">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex items-start gap-4 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-widest font-mono font-bold">Режим работы</div>
-                    <div className="text-sm font-bold text-slate-800 mt-1">Ежедневно: 9:00 – 19:00</div>
+                    <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Режим работы</div>
+                    <div className="text-sm font-black text-slate-900 mt-1 font-display">Ежедневно: 9:00 – 19:00</div>
                   </div>
                 </div>
 
                 {/* ContactItem 3: Phones */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-4 transition-all hover:border-slate-200">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex items-start gap-4 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-widest font-mono font-bold">Телефоны для связи</div>
+                    <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Телефоны для связи</div>
                     <div className="mt-1.5 space-y-1">
                       {CONTACTS.phones.map((phone, idx) => (
                         <a 
                           key={idx}
                           href={`tel:${phone.value}`}
-                          className="block text-sm font-bold text-slate-800 hover:text-amber-600 transition-colors"
+                          className="block text-sm font-black text-slate-900 hover:text-amber-850 transition-colors font-display"
                         >
                           {phone.display}
                         </a>
@@ -1259,12 +1259,71 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* ContactItem 4: Socials & Navigation */}
+                <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex flex-col gap-3 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
+                      <Send className="w-5 h-5 -translate-x-0.5 translate-y-0.5 fill-amber-950/20" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Социальные сети и навигация</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Свяжитесь с нами удобным способом или постройте маршрут на карте</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5 mt-1">
+                    {/* Yandex Maps / "Макс" */}
+                    <a
+                      href="https://yandex.ru/maps/org/promaslo/25579278228/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs font-bold text-amber-950 hover:bg-amber-100 transition-all shadow-xs"
+                    >
+                      <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+                      <span>Яндекс.Карты (Макс)</span>
+                    </a>
+
+                    {/* WhatsApp */}
+                    <a
+                      href="https://wa.me/79527982234"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-950 hover:bg-emerald-100 transition-all shadow-xs"
+                    >
+                      <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600/10 shrink-0" />
+                      <span>WhatsApp</span>
+                    </a>
+
+                    {/* VK */}
+                    <a
+                      href="https://vk.com/promaslo39"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#0077FF]/5 border border-[#0077FF]/20 text-xs font-bold text-[#0044AA] hover:bg-[#0077FF]/10 transition-all shadow-xs"
+                    >
+                      <Share2 className="w-4 h-4 text-[#0077FF] shrink-0" />
+                      <span>ВКонтакте</span>
+                    </a>
+
+                    {/* Instagram */}
+                    <a
+                      href="https://instagram.com/promaslo39"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-rose-50 border border-rose-100 text-xs font-bold text-rose-955 hover:bg-rose-100/80 transition-all shadow-xs"
+                    >
+                      <Instagram className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span>Instagram</span>
+                    </a>
+                  </div>
+                </div>
+
               </div>
 
             </div>
 
             {/* High-fidelity interactive embedded Yandex Maps Widget with fallback */}
-            <div className="lg:col-span-7 min-h-[380px] lg:min-h-[440px] rounded-3xl overflow-hidden relative border border-slate-200 shadow-xl bg-slate-50 flex flex-col">
+            <div className="lg:col-span-12 xl:col-span-7 min-h-[380px] lg:min-h-[440px] rounded-3xl overflow-hidden relative border border-[#E28500]/20 shadow-xl bg-slate-50 flex flex-col">
               <iframe 
                 src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=25579278228" 
                 className="w-full flex-1 min-h-[280px] border-0"
@@ -1272,7 +1331,7 @@ export default function App() {
                 loading="lazy"
                 title="Адрес автосервиса ПроМасло"
               />
-              <div className="p-4 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs shrink-0">
+              <div className="p-4 bg-white/90 border-t border-amber-250/20 backdrop-blur-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs shrink-0">
                 <div className="space-y-1">
                   <div className="font-mono text-[9px] text-slate-400 font-bold uppercase tracking-wider">Интерактивная карта</div>
                   <div className="font-bold text-slate-900 flex items-center gap-1.5 leading-tight">
@@ -1309,9 +1368,9 @@ export default function App() {
       </section>
 
       {/* Footer block - Clean minimal copyright line */}
-      <footer className="bg-slate-50 text-slate-500 py-6 border-t border-slate-200/80 text-xs text-center">
+      <footer className="bg-amber-950/90 text-amber-100/70 py-7 border-t border-amber-900/40 text-xs text-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-amber-200/50">
             <div>
               © {new Date().getFullYear()} ПроМасло Калининград. Все права защищены. {CONTACTS.owner}
             </div>
@@ -1321,6 +1380,29 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Action Buttons Dock */}
+      <div className="fixed bottom-16 sm:bottom-12 right-6 sm:right-8 z-[9999] flex flex-col items-center gap-3">
+        <AnimatePresence>
+          {/* Telegram Button (Official Black Style) */}
+          <motion.a
+            href="https://t.me/+79527982234"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            whileHover={{ scale: 1.1, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            className="group relative flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white shadow-lg shadow-slate-950/40 transition-all cursor-pointer border border-slate-900"
+            title="Написать в Telegram"
+          >
+            <Send className="h-5 w-5 -translate-x-0.5 translate-y-0.5 fill-white text-white" />
+            <span className="absolute right-14 scale-0 group-hover:scale-100 transition-all duration-200 origin-right bg-slate-900 text-white text-xs font-black py-1.5 px-3 rounded-lg shadow-md whitespace-nowrap leading-none select-none">
+              Telegram
+            </span>
+          </motion.a>
+        </AnimatePresence>
+      </div>
 
     </div>
   );

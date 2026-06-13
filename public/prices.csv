@@ -15,6 +15,8 @@
 Лукойл,Лукойл Genesis Armortech 5W-40 1л,1300
 Лукойл,Лукойл Genesis 5W-30 4л,3500
 Лукойл,Лукойл Genesis 5W-30 1л,1200
+Лукойл,Лукойл Genesis A5/B5 5W-30 1л розлив,900
+Лукойл,Лукойл Genesis C3 5W-30 1л розлив,1000
 ВМПАВТО,ВМПАВТО 5W-40 4л,4000
 ВМПАВТО,ВМПАВТО 5W-30 4л,4000
 ВМПАВТО,ВМПАВТО 10W-50 4л,5500
@@ -25,6 +27,7 @@ ZIC,ZIC X-7 5W-40 4л,4500
 ZIC,ZIC X-7 5W-30 4л,4500
 ZIC,ZIC ATF Multi 1л розлив,1000
 ZIC,ZIC ATF Multi 1л,1200
+ZIC,ZIC X7 LS 5W-30 1л розлив,1200
 Valvoline,Valvoline SynPower XL-III 5W-30 C3 4л,6700
 Valvoline,Valvoline SynPower XL-III 5W-30 C3 1л,2000
 Valvoline,Valvoline SynPower MST 5W-30 C3 4л,6400
@@ -34,6 +37,7 @@ Valvoline,Valvoline 5W-50 4л.,6500
 Valvoline,Valvoline 5W-50 1л.,1800
 Valvoline,Valvoline 5W-30 MAXLIFE C3 4л,5900
 Valvoline,Valvoline 5W-30 MAXLIFE C3 1л.,1500
+Valvoline,Valvoline C3 5W-40 1л розлив,1500
 VAG,VAG VW Special Plus 5W-40 5л,9500
 VAG,VAG VW Special Plus 5W-40 1л,1500
 VAG,VAG VW Special G 5W-40 масло моторное 5л,6000
@@ -70,8 +74,10 @@ Teboil,Teboil Diamond ECP 5W-30 4л,4500
 Sintec,Sintec Platinum 5W-40 4л,3500
 Sintec,Sintec Platinum 5W-40 1л,800
 Sintec,Sintec 5W-30 4л,3500
-Shell,Shell Ultra ECT C3 5W-30 1л розлив,1400
-Shell,Shell HX8 5W-40 1л розлив,1100
+Shell,SHELL HELIX ULTRA ECT C3 5W-30 1л розлив,1600
+Shell,SHELL HELIX HX8 5W-40 1л розлив,1300
+Shell,SHELL HELIX HX8 5W-30 1л розлив,1300
+Shell,SHELL HELIX HX7 10W-40 1л розлив,800
 Shell,SHELL HELIX ULTRA ECT C3 5W-30 4л,7500
 Shell,SHELL HELIX ULTRA ECT C3 0W-30 5л,8000
 Shell,SHELL HELIX ULTRA ECT C3 0W-30 1л,2000
@@ -115,6 +121,9 @@ ROLF,ROLF 5W-30 С3 4л,5000
 ROLF,ROLF 5W-30 С3 1л,1400
 ROLF,ROLF 3-Synthetic 5W-40 4л,4300
 ROLF,ROLF 3-Synthetic 5W-40 1л,1400
+ROLF,ROLF Professional C3 5W-30 1л розлив,1200
+ROLF,ROLF Professional C3 5W-40 1л розлив,1200
+ROLF,ROLF Professional C5 0W-20 1л розлив,1600
 REPSOL,REPSOL EVOLUTION 5W-30 4л,6500
 REPSOL,REPSOL EVOLUTION 5W-30 1л,1600
 REPSOL,REPSOL ELITE WV 504/507 5W-30 4л,6500
@@ -123,6 +132,8 @@ REPSOL,REPSOL ELITE COSMOS F 5W-30 4л,6500
 REPSOL,REPSOL ELITE COSMOS F 5W-30 1л,1600
 REPSOL,REPSOL ELITE 5W-40 4л,6000
 REPSOL,REPSOL ELITE 5W-40 1л,1600
+Promatix,Promatix C3 5W-30 1л розлив,1000
+Promatix,Promatix C3 5W-40 1л розлив,1000
 NGN,NGN 5W-40 DIESEL 4л,4000
 NGN,NGN 5W-30 MAXI SL/CF 4л,3000
 NGN,NGN 5W-30 MAXI SL/CF 1л,800
@@ -145,6 +156,7 @@ Mobil,Mobil 1 ESP 5W-30 4л,7500
 Mobil,Mobil 1 ESP 5W-30 1л,2000
 Mobil,Mobil 1 5W-50 4л,7500
 Mobil,Mobil 1 5W-50 1л,2000
+Mobil,Mobil Super 10W-40 1л розлив,900
 LIQUI MOLY,LIQUI MOLY Top Tec 4100 5W-40 4л,7500
 LIQUI MOLY,LIQUI MOLY SHT 5W-40 4л,7500
 LIQUI MOLY,LIQUI MOLY Molygen 5W-30 4л,7500
@@ -192,11 +204,12 @@ Elf,"Elf Full-Tech Fe 5W-30, 5л",7500
 Elf,"Elf Full-Tech Fe 5W-30, 1л",2000
 Elf,"Elf Evolution 700 STI 10W-40, 5л",4500
 Elf,"Elf Evolution 700 STI 10W-40, 1л",1200
-Elf,ELF 900 SXR 5W-40 1л розлив,1000
+Elf,ELF 900 SXR 5W-40 1л розлив,1200
 Elf,Elf 900 SXR 5W-40 1л,1600
 Elf,Elf 900 SXR 5W-40 5л.,6500
 Elf,Elf 900 DID 5W-30 5л.,6500
 Elf,Elf 900 DID 5W-30 1л.,1600
+Devon,Devon 10W-40 1л розлив,500
 Castrol,Castrol 5W-40 4л,6500
 Castrol,Castrol 5W-40 1л,2000
 Castrol,Castrol 5W-30 4л,6500
