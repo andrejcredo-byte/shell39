@@ -12,7 +12,7 @@
     ```json
    "scripts": {
      "dev": "vite",
-     "build": "node download-real-logos.js && tsc && vite build"
+     "build": "node download-real-logos.ts && tsc && vite build"
    }
   },
   "dependencies": {
