@@ -1382,7 +1382,7 @@ export default function App() {
       </footer>
 
       {/* Floating Action Buttons Dock */}
-      <div className="fixed bottom-16 sm:bottom-12 right-6 sm:right-8 z-[9999] flex flex-col items-center gap-3">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] flex flex-col items-center gap-3">
         <AnimatePresence>
           {/* Telegram Button (Official Black Style) */}
           <motion.a
