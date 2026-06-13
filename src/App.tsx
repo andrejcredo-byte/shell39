@@ -12,13 +12,71 @@ import {
   AlertTriangle,
   Search,
   Send,
-  Instagram,
   MessageCircle,
-  Share2
+  Share2,
+  Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { CONTACTS } from "./data";
 import BrandLogo from "./components/BrandLogo";
+
+interface Review {
+  id: string;
+  author: string;
+  avatarBg: string;
+  initials: string;
+  date: string;
+  rating: number;
+  text: string;
+}
+
+const REVIEWS: Review[] = [
+  {
+    id: "rev-1",
+    author: "Алексей К.",
+    avatarBg: "bg-blue-600",
+    initials: "АК",
+    date: "28 мая 2026",
+    rating: 5,
+    text: "Отличный сервис! Приехал на замену масла, всё сделали буквально за 20 минут. Мастер подсказал, какое масло лучше залить в мой мотор, оригинал всегда в наличии. Цены очень приятные. Рекомендую!"
+  },
+  {
+    id: "rev-2",
+    author: "Марина С.",
+    avatarBg: "bg-pink-600",
+    initials: "МС",
+    date: "14 апреля 2026",
+    rating: 5,
+    text: "Записывалась онлайн через виджет на сайте — безумно удобно! Приехала к назначенному времени, бокс чистый, сотрудники вежливые. Заменили масло и фильтр быстро и аккуратно. Большое спасибо за качественный сервис!"
+  },
+  {
+    id: "rev-3",
+    author: "Дмитрий Ш.",
+    avatarBg: "bg-emerald-600",
+    initials: "ДШ",
+    date: "3 марта 2026",
+    rating: 5,
+    text: "Отличная станция! Меняю масло тут уже не первый раз. Всегда качественные расходные материалы, оригинальные бренды масел. Мастера знают свое дело, делают всё аккуратно, без лишней суеты. Цены честные."
+  },
+  {
+    id: "rev-4",
+    author: "Екатерина В.",
+    avatarBg: "bg-indigo-600",
+    initials: "ЕВ",
+    date: "19 ноября 2025",
+    rating: 5,
+    text: "Превосходно! Впервые приехала на замену, очень переживала, но мастера всё наглядно объяснили, проверили уровень, показали канистру. Работа заняла минимум времени. Уютное место для ожидания. Теперь только сюда!"
+  },
+  {
+    id: "rev-5",
+    author: "Владимир П.",
+    avatarBg: "bg-amber-600",
+    initials: "ВП",
+    date: "8 октября 2025",
+    rating: 5,
+    text: "Быстро, профессионально и по делу. Удобно, что можно сразу посмотреть цены и записаться онлайн. Всё прозрачно, никаких скрытых наценок. Сервисом очень доволен, приеду снова обязательно."
+  }
+];
 
 function ProMasloLogo({ showText = true, dark = false }: { showText?: boolean; dark?: boolean }) {
   return (
@@ -488,6 +546,7 @@ export default function App() {
   
   const catalogRef = useRef<HTMLDivElement>(null);
   const bookingRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLDivElement>(null);
   const contactsRef = useRef<HTMLDivElement>(null);
 
   const handleScrollTo = (elementRef: RefObject<HTMLDivElement | null>) => {
@@ -540,6 +599,12 @@ export default function App() {
               className="text-slate-700 hover:text-amber-950 hover:bg-amber-500/10 px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
             >
               Запись на замену
+            </button>
+            <button 
+              onClick={() => handleScrollTo(reviewsRef)}
+              className="text-slate-700 hover:text-amber-950 hover:bg-amber-500/10 px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
+            >
+              Отзывы
             </button>
             <button 
               onClick={() => handleScrollTo(contactsRef)}
@@ -623,6 +688,12 @@ export default function App() {
                   className="block w-full text-left px-4 py-3 rounded-xl text-amber-955 hover:text-slate-950 hover:bg-amber-500/15 active:bg-amber-500/20 transition-all text-base font-extrabold"
                 >
                   Запись на замену
+                </button>
+                <button 
+                  onClick={() => handleScrollTo(reviewsRef)}
+                  className="block w-full text-left px-4 py-3 rounded-xl text-amber-955 hover:text-slate-950 hover:bg-amber-500/15 active:bg-amber-500/20 transition-all text-base font-extrabold"
+                >
+                  Отзывы
                 </button>
                 <button 
                   onClick={() => handleScrollTo(contactsRef)}
@@ -747,15 +818,15 @@ export default function App() {
               </div>
 
               {/* Elegant Frosted Glass Container to emphasize text readability over the golden background */}
-              <div className="relative w-full py-8 px-6 sm:px-12 md:py-12 rounded-3xl bg-white/45 backdrop-blur-md shadow-lg border border-white/60 flex flex-col items-center space-y-5 overflow-hidden">
+              <div className="relative w-full py-5 px-4 sm:py-12 sm:px-12 rounded-3xl bg-white/45 backdrop-blur-md shadow-lg border border-white/60 flex flex-col items-center space-y-3.5 sm:space-y-5 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black font-display leading-tight text-slate-950 tracking-tight relative z-10">
+                <h1 className="text-2xl sm:text-5xl md:text-6xl font-black font-display leading-tight text-slate-950 tracking-tight relative z-10 uppercase text-center">
                   Замена моторного масла <br className="hidden sm:inline" />
                   в Калининграде
                 </h1>
 
-                <p className="text-slate-955 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-semibold relative z-10">
+                <p className="text-slate-955 text-xs sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-semibold relative z-10 text-center">
                   Быстро, надежно и по честным ценам. Наша основная миссия – продлить жизнь вашему двигателю с помощью оригинальных масел от известных и надёжных брендов.
                 </p>
               </div>
@@ -1204,6 +1275,73 @@ export default function App() {
         </div>
       </section>
 
+      {/* Reviews Section */}
+      <section ref={reviewsRef} id="reviews" className="py-14 bg-transparent relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center mb-10 space-y-3">
+            
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 font-display uppercase tracking-wider text-center">
+              Что говорят о нас клиенты
+            </h2>
+            
+            <div className="flex items-center justify-center text-sm">
+              <a 
+                href="https://yandex.ru/maps/org/promaslo/25579278228/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#E28500] hover:text-[#B66B00] font-black underline transition-colors"
+              >
+                Читать все отзывы на Яндексе ↗
+              </a>
+            </div>
+          </div>
+
+          {/* Grid on Desktop & horizontal scroll on mobile with Snap support */}
+          <div className="flex sm:grid gap-5 md:gap-6 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
+            {REVIEWS.map((review) => (
+              <div 
+                key={review.id}
+                className="w-[290px] sm:w-auto shrink-0 snap-start p-5 rounded-2xl bg-white/70 backdrop-blur-xs border border-amber-200/40 shadow-sm flex flex-col justify-between hover:border-amber-400 hover:bg-white transition-all duration-300"
+              >
+                <div className="space-y-4">
+                  {/* Author Header */}
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full ${review.avatarBg} text-white font-black text-sm flex items-center justify-center shrink-0 shadow-sm`}>
+                      {review.initials}
+                    </div>
+                    <div className="leading-tight">
+                      <div className="font-black text-slate-900 text-sm">{review.author}</div>
+                      <div className="text-[10px] text-slate-400 font-mono font-bold mt-0.5">{review.date}</div>
+                    </div>
+                  </div>
+
+                  {/* Rating Stars */}
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    ))}
+                  </div>
+
+                  {/* Review Text */}
+                  <p className="text-slate-700 text-xs leading-relaxed font-semibold">
+                    {review.text}
+                  </p>
+                </div>
+
+                <div className="mt-5 pt-3 border-t border-amber-500/10 flex items-center justify-between">
+                  <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                    Яндекс.Карты
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
       {/* Contacts Block (Адрес, часы работы, интерактивное табло, ГИС ссылки) */}
       <section ref={contactsRef} id="contacts" className="py-14 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1211,14 +1349,14 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Contacts details column */}
-            <div className="lg:col-span-10 xl:col-span-5 space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
               
               {/* Icon cards blocks */}
               <div className="space-y-4">
                 
                 {/* ContactItem 1: Address */}
                 <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex items-start gap-4 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-955 shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
@@ -1229,7 +1367,7 @@ export default function App() {
 
                 {/* ContactItem 2: Working Hours */}
                 <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex items-start gap-4 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
-                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-955 shrink-0">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
@@ -1259,28 +1397,51 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* ContactItem 4: Socials & Navigation */}
+                {/* ContactItem 4: Socials */}
                 <div className="p-4 rounded-xl bg-white/70 backdrop-blur-xs border border-amber-200/40 flex flex-col gap-3 transition-all hover:bg-white hover:border-amber-400 shadow-sm">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-950 shrink-0">
-                      <Send className="w-5 h-5 -translate-x-0.5 translate-y-0.5 fill-amber-950/20" />
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-955 shrink-0">
+                      <Send className="w-5 h-5 -translate-x-0.5 translate-y-0.5 fill-amber-955/20" />
                     </div>
                     <div>
-                      <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Социальные сети и навигация</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Свяжитесь с нами удобным способом или постройте маршрут на карте</div>
+                      <div className="text-xs text-slate-800 uppercase tracking-widest font-mono font-bold">Социальные сети</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Свяжитесь с нами удобным способом.</div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2.5 mt-1">
-                    {/* Yandex Maps / "Макс" */}
+                    {/* Telegram */}
                     <a
-                      href="https://yandex.ru/maps/org/promaslo/25579278228/"
+                      href="https://t.me/+79527982234"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs font-bold text-amber-950 hover:bg-amber-100 transition-all shadow-xs"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-sky-50 border border-sky-200 text-xs font-bold text-sky-955 hover:bg-sky-100 transition-all shadow-xs"
                     >
-                      <MapPin className="w-4 h-4 text-red-500 shrink-0" />
-                      <span>Яндекс.Карты (Макс)</span>
+                      <svg className="w-4.5 h-4.5 shrink-0 text-[#0088cc] fill-[#0088cc]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.53-1.4.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.37-.49 1.02-.75 4-1.74 6.67-2.88 8-3.45 3.81-1.61 4.6-1.89 5.12-1.9.11 0 .37.03.54.17.14.12.18.28.2.4l-.02.17z" />
+                      </svg>
+                      <span>Telegram</span>
+                    </a>
+
+                    {/* Макс */}
+                    <a
+                      href="https://max.ru/u/f9LHodD0cOJAf-fwZrDwr2aWHVcX5EB0E-tlktvsIQWOJpQ7MjmNB3kILJE"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-955 hover:bg-indigo-100 transition-all shadow-xs"
+                    >
+                      <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="maxGradientFinal" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#12c2e9"/>
+                            <stop offset="50%" stopColor="#c471ed"/>
+                            <stop offset="100%" stopColor="#f64f59"/>
+                          </linearGradient>
+                        </defs>
+                        <rect width="24" height="24" rx="6" fill="url(#maxGradientFinal)"/>
+                        <path d="M12 4.5c-4.14 0-7.5 3.36-7.5 7.5 0 1.58.49 3.05 1.33 4.26l-.97 2.8c-.1.31.2.6.51.51l2.8-.97A7.45 7.45 0 0 0 12 19.5c4.14 0 7.5-3.36 7.5-7.5s-3.36-7.5-7.5-7.5zm0 11c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" fill="white"/>
+                      </svg>
+                      <span>Макс</span>
                     </a>
 
                     {/* WhatsApp */}
@@ -1288,9 +1449,12 @@ export default function App() {
                       href="https://wa.me/79527982234"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-950 hover:bg-emerald-100 transition-all shadow-xs"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-955 hover:bg-emerald-100 transition-all shadow-xs"
                     >
-                      <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600/10 shrink-0" />
+                      <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="6" fill="#25D366"/>
+                        <path d="M12.04 5c-3.86 0-7 3.14-7 7.01 0 1.35.39 2.62 1.06 3.7L5.1 19.9l4.3-1.12a6.97 6.97 0 0 0 2.64.63h.01c3.85 0 7-3.14 7-7.01C19.05 8.14 15.9 5 12.04 5zm3.62 9.87c-.16.44-.8 1.01-1.24 1.07-.38.05-.88.1-2.58-.6a8.8 8.8 0 0 1-3.63-3.25c-.11-.15-.87-1.16-.87-2.22s.54-1.58.74-1.78c.2-.21.43-.26.57-.26.11 0 .21 0 .31.01.11 0 .25-.04.39.29.15.35.51 1.25.56 1.35.05.1.08.22.01.35-.07.13-.15.22-.24.32-.09.1-.19.23-.27.32-.1.1-.2.21-.08.41.11.19.5 1.15 1.08 1.67.75.67 1.39.88 1.59.98.2.1.32.08.4-.01.1-.11.4-.47.51-.62.08-.11.18-.09.29-.05.11.04.73.34.85.4.12.06.2.09.23.14.03.05.03.29-.13.73z" fill="white"/>
+                      </svg>
                       <span>WhatsApp</span>
                     </a>
 
@@ -1299,21 +1463,13 @@ export default function App() {
                       href="https://vk.com/promaslo39"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#0077FF]/5 border border-[#0077FF]/20 text-xs font-bold text-[#0044AA] hover:bg-[#0077FF]/10 transition-all shadow-xs"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-blue-50 border border-blue-200 text-xs font-bold text-blue-950 hover:bg-blue-100 transition-all shadow-xs"
                     >
-                      <Share2 className="w-4 h-4 text-[#0077FF] shrink-0" />
+                      <svg className="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="24" height="24" rx="5.33" fill="#0077FF"/>
+                        <path d="M17.616 8.711c.105-.353-.02-.613-.523-.613h-1.728c-.422 0-.616.223-.728.481 0 0-.877 2.13-2.122 3.518-.403.402-.587.53-.807.53-.11 0-.27-.128-.27-.497v-3.432c0-.422-.123-.613-.478-.613H8.225c-.265 0-.423.197-.423.383 0 .4 1.25.491 1.377 1.62v2.46c0 .539-.098.636-.312.636-.572 0-1.96-2.138-2.784-4.588-.16-.482-.326-.676-.75-.676H3.61c-.477 0-.573.223-.573.481 0 .45.578 2.68 2.69 5.64 1.408 2.023 3.393 3.12 5.197 3.12 1.084 0 1.218-.244 1.218-.665v-1.55c0-.477.101-.572.438-.572.247 0 .674.125 1.668 1.08.135.132.223.23.364.354 1.137 1.137 1.611 1.611 2.213 1.611h1.728c.477 0 .714-.239.577-.714-.15-.468-.691-1.15-1.406-1.954-.389-.452-.973-.939-1.147-1.182-.244-.321-.174-.46 0-.74 0 0 2.09-2.942 2.302-3.92z" fill="white"/>
+                      </svg>
                       <span>ВКонтакте</span>
-                    </a>
-
-                    {/* Instagram */}
-                    <a
-                      href="https://instagram.com/promaslo39"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-rose-50 border border-rose-100 text-xs font-bold text-rose-955 hover:bg-rose-100/80 transition-all shadow-xs"
-                    >
-                      <Instagram className="w-4 h-4 text-rose-600 shrink-0" />
-                      <span>Instagram</span>
                     </a>
                   </div>
                 </div>
@@ -1323,7 +1479,7 @@ export default function App() {
             </div>
 
             {/* High-fidelity interactive embedded Yandex Maps Widget with fallback */}
-            <div className="lg:col-span-12 xl:col-span-7 min-h-[380px] lg:min-h-[440px] rounded-3xl overflow-hidden relative border border-[#E28500]/20 shadow-xl bg-slate-50 flex flex-col">
+            <div className="lg:col-span-7 min-h-[380px] lg:min-h-[440px] rounded-3xl overflow-hidden relative border border-[#E28500]/20 shadow-xl bg-slate-50 flex flex-col">
               <iframe 
                 src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=25579278228" 
                 className="w-full flex-1 min-h-[280px] border-0"
