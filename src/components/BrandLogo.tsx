@@ -164,19 +164,67 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
   const initialRelativeSrc = resolveLogoUrl(matchedLogoUrl);
 
   const [src, setSrc] = useState(initialRelativeSrc);
+  const [fallbackQueue, setFallbackQueue] = useState<string[]>([]);
   const [loadFailed, setLoadFailed] = useState(false);
+
+  // Generate candidate fallbacks for self-healing loader
+  const getFallbackCandidates = (slug: string, originalUrl: string): string[] => {
+    if (!slug) return [];
+    
+    const base = import.meta.env.BASE_URL || "/";
+    const formats = [".svg", ".png", ".jpg", ".ico", ".PNG", ".SVG", ".JPG", ".ICO"];
+    const casings = [
+      slug.toLowerCase(),
+      slug.toUpperCase(),
+      slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase()
+    ];
+
+    const uniqueCasings = Array.from(new Set(casings));
+    const candidates: string[] = [];
+
+    // 1. Try absolute version of the configured URL first
+    if (originalUrl && !originalUrl.startsWith("http")) {
+      candidates.push(originalUrl);
+    }
+
+    // 2. Generate combinations of casings and formats
+    for (const casing of uniqueCasings) {
+      for (const fmt of formats) {
+        const relPath = `logos/${casing}${fmt}`;
+        
+        let relUrl = "";
+        if (base === "./") {
+          relUrl = `./${relPath}`;
+        } else if (base.endsWith("/")) {
+          relUrl = `${base}${relPath}`;
+        } else {
+          relUrl = `${base}/${relPath}`;
+        }
+
+        const absUrl = `/${relPath}`;
+
+        if (relUrl) candidates.push(relUrl);
+        candidates.push(absUrl);
+      }
+    }
+
+    // Filter unique values that are different from our starting relative src
+    return Array.from(new Set(candidates)).filter(c => c !== initialRelativeSrc);
+  };
 
   // Sync state if brand or slug changes
   useEffect(() => {
     setSrc(initialRelativeSrc);
+    setFallbackQueue(getFallbackCandidates(matchedSlug, matchedLogoUrl));
     setLoadFailed(false);
-  }, [initialRelativeSrc]);
+  }, [initialRelativeSrc, matchedSlug, matchedLogoUrl]);
 
   if (matchedLogoUrl && !loadFailed) {
     const handleError = () => {
-      // If our base-prefixed path fails, try falling back to the target root-relative path directly
-      if (src !== matchedLogoUrl) {
-        setSrc(matchedLogoUrl);
+      if (fallbackQueue.length > 0) {
+        const nextSrc = fallbackQueue[0];
+        setFallbackQueue(prev => prev.slice(1));
+        setSrc(nextSrc);
       } else {
         setLoadFailed(true);
       }
