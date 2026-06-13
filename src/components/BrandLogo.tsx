@@ -169,7 +169,7 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
 
   const matchedLogoUrl = matchedSlug ? (brandLogos as Record<string, string>)[matchedSlug] : "";
 
-  // Highly robust path resolver to handle any Vite BASE_URL configuration flawlessly
+  // Highly robust path resolver: use absolute path for live web server, and relative path only for local file:/// loads
   const resolveLogoUrl = (url: string): string => {
     if (!url) return "";
     
@@ -181,15 +181,13 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
       cleanPath = cleanPath.slice(1);
     }
 
-    const base = import.meta.env.BASE_URL || "/";
-
-    if (base === "./") {
+    // If opened directly from local file system (file://)
+    if (typeof window !== "undefined" && window.location.protocol === "file:") {
       return `./${cleanPath}`;
     }
-    if (base.endsWith("/")) {
-      return `${base}${cleanPath}`;
-    }
-    return `${base}/${cleanPath}`;
+
+    // Otherwise, generate a super reliable absolute path from domain root
+    return `/${cleanPath}`;
   };
 
   const initialRelativeSrc = resolveLogoUrl(matchedLogoUrl);
@@ -198,56 +196,26 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
   const [fallbackQueue, setFallbackQueue] = useState<string[]>([]);
   const [loadFailed, setLoadFailed] = useState(false);
 
-  // Generate candidate fallbacks for self-healing loader
+  // Generate candidate fallbacks for self-healing loader (very small size to avoid browser request stalling)
   const getFallbackCandidates = (slug: string, originalUrl: string): string[] => {
     if (!slug) return [];
     
-    const base = import.meta.env.BASE_URL || "/";
-    const formats = [".svg", ".png", ".jpg", ".ico", ".PNG", ".SVG", ".JPG", ".ICO"];
-    const casings = [
-      slug.toLowerCase(),
-      slug.toUpperCase(),
-      slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase()
-    ];
-
-    const uniqueCasings = Array.from(new Set(casings));
     const candidates: string[] = [];
 
-    // 1. Try absolute version of the configured URL first
-    if (originalUrl && !originalUrl.startsWith("http")) {
-      candidates.push(originalUrl);
-    }
-
-    // 2. Generate combinations of casings, formats, and folder casing (logos vs Logos)
-    for (const folder of ["logos", "Logos"]) {
-      for (const casing of uniqueCasings) {
-        for (const fmt of formats) {
-          const relPath = `${folder}/${casing}${fmt}`;
-          
-          let relUrl = "";
-          if (base === "./") {
-            relUrl = `./${relPath}`;
-          } else if (base.endsWith("/")) {
-            relUrl = `${base}${relPath}`;
-          } else {
-            relUrl = `${base}/${relPath}`;
-          }
-
-          const absUrl = `/${relPath}`;
-
-          if (relUrl) candidates.push(relUrl);
-          candidates.push(absUrl);
-        }
+    // 1. Try alternative extension formats
+    const formats = [".png", ".jpg", ".svg", ".png"];
+    for (const fmt of formats) {
+      const absUrl = `/logos/${slug}${fmt}`;
+      candidates.push(absUrl);
+      if (typeof window !== "undefined" && window.location.protocol === "file:") {
+        candidates.push(`./logos/${slug}${fmt}`);
       }
     }
 
-    // 3. Online ultra-reliable public CDN fallbacks if domain is mapped
+    // 2. Clear clean public CDN fallback as a backup if domain is mapped
     const domain = BRANDS_DOMAINS_MAP[slug];
     if (domain) {
       candidates.push(`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`);
-      candidates.push(`https://logo.clearbit.com/${domain}`);
-      candidates.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
-      candidates.push(`https://www.google.com/s2/favicons?sz=128&domain=${domain}`);
     }
 
     // Filter unique values that are different from our starting relative src
