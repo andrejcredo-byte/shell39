@@ -138,13 +138,30 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
 
   const matchedLogoUrl = matchedSlug ? (brandLogos as Record<string, string>)[matchedSlug] : "";
 
-  // Prepare standard base-prefixed path
-  const base = import.meta.env.BASE_URL || "/";
-  const initialRelativeSrc = matchedLogoUrl
-    ? (matchedLogoUrl.startsWith("/")
-        ? (base.endsWith("/") ? `${base}${matchedLogoUrl.slice(1)}` : `${base}${matchedLogoUrl}`)
-        : (base.endsWith("/") ? `${base}${matchedLogoUrl}` : `${base}/${matchedLogoUrl}`))
-    : "";
+  // Highly robust path resolver to handle any Vite BASE_URL configuration flawlessly
+  const resolveLogoUrl = (url: string): string => {
+    if (!url) return "";
+    
+    // Get clean relative path (strip leading slash, dot-slash, etc.)
+    let cleanPath = url;
+    if (cleanPath.startsWith("./")) {
+      cleanPath = cleanPath.slice(2);
+    } else if (cleanPath.startsWith("/")) {
+      cleanPath = cleanPath.slice(1);
+    }
+
+    const base = import.meta.env.BASE_URL || "/";
+
+    if (base === "./") {
+      return `./${cleanPath}`;
+    }
+    if (base.endsWith("/")) {
+      return `${base}${cleanPath}`;
+    }
+    return `${base}/${cleanPath}`;
+  };
+
+  const initialRelativeSrc = resolveLogoUrl(matchedLogoUrl);
 
   const [src, setSrc] = useState(initialRelativeSrc);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -157,17 +174,16 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
 
   if (matchedLogoUrl && !loadFailed) {
     const handleError = () => {
-      // If base-prefixed fails, try fallback direct path
+      // If our base-prefixed path fails, try falling back to the target root-relative path directly
       if (src !== matchedLogoUrl) {
         setSrc(matchedLogoUrl);
       } else {
-        // Only set loadFailed if the image is truly missing, which should not happen for public files
         setLoadFailed(true);
       }
     };
 
     return (
-      <div className={`relative shrink-0 flex items-center justify-center bg-white rounded-lg overflow-hidden ${className} shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-slate-200/60 p-1`}>
+      <div className={`relative shrink-0 flex items-center justify-center bg-white rounded-lg overflow-hidden ${className} shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-slate-200/60 p-0.5`}>
         <img
           src={src}
           alt={brand}
