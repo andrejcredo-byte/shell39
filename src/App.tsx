@@ -1195,7 +1195,7 @@ export default function App() {
 
           <div className="p-1 sm:p-2 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-150/50 relative overflow-hidden h-[710px] flex flex-col">
             <iframe 
-              src="https://yandex.ru/sprav/widget/request/company/25579278228" 
+              src="https://yandex.ru/business/widget/request/company/25579278228" 
               className="w-full flex-1 h-full border-0 rounded-2xl"
               title="Онлайн запись на замену масла ПроМасло"
               allowFullScreen
