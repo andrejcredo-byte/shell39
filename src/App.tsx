@@ -544,7 +544,7 @@ export default function App() {
           </nav>
 
           {/* Desktop Call to Actions & Contact */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-5">
             <div className="text-right flex flex-col items-end">
               <a 
                 href={`tel:${CONTACTS.phones[0].value}`}
@@ -553,9 +553,16 @@ export default function App() {
                 <Phone className="w-4 h-4 text-emerald-600 fill-emerald-600 shrink-0 group-hover:scale-110 transition-transform" />
                 <span>+7 (4012) 900-079</span>
               </a>
-              <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5 whitespace-nowrap">
-                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span>Ежедневно 9:00 – 19:00</span>
+              <div className="flex items-center gap-2.5 text-[11px] text-slate-500 mt-1 justify-end flex-wrap">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>{CONTACTS.address}</span>
+                </div>
+                <span className="text-slate-300">•</span>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>Ежедневно: 9:00 – 19:00</span>
+                </div>
               </div>
             </div>
             <button
@@ -675,7 +682,7 @@ export default function App() {
               <div className="flex flex-row items-center justify-center gap-3">
                 {/* Yandex Rating Award Link Badge */}
                 <a 
-                  href="https://yandex.ru/maps/org/promaslo/178550117070/"
+                  href="https://yandex.ru/maps/org/promaslo/25579278228/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-[160px] min-w-[160px] max-w-[160px] h-[50px] shrink-0 rounded-xl bg-[#F5F5F5] p-2 flex flex-col justify-between text-left select-none cursor-pointer transition-all hover:bg-neutral-200/60 active:scale-95 duration-150 relative border border-transparent"
@@ -821,7 +828,7 @@ export default function App() {
           ) : (
             <>
               {/* Custom Modern Brand Select Dropdown */}
-              <div className="max-w-md mx-auto mb-10 text-center relative z-20" ref={brandDropdownRef}>
+              <div className="max-w-md mx-auto mb-6 text-center relative z-20" ref={brandDropdownRef}>
                 {/* Dropdown Toggle Button */}
                 <button
                   type="button"
@@ -829,25 +836,28 @@ export default function App() {
                     setIsBrandDropdownOpen(!isBrandDropdownOpen);
                     setBrandSearchQuery(""); // Clear search filter on open
                   }}
-                  className={`w-full min-h-[52px] px-5 py-3 rounded-2xl border transition-all duration-300 text-left flex items-center justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-900/10 ${
+                  className={`w-full min-h-[50px] px-4.5 py-3 rounded-xl border transition-all duration-300 text-left flex items-center justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-900/10 ${
                     selectedBrand 
-                      ? "bg-slate-950 border-slate-950 text-white shadow-md shadow-slate-950/10" 
-                      : "bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-350"
+                      ? "bg-white border-slate-900 text-slate-900 shadow-sm" 
+                      : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100/50 hover:border-slate-350"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     {selectedBrand ? (
-                      <BrandLogo brand={selectedBrand} className="w-14 h-7 border border-white/10" />
+                      <div className="flex items-center gap-2">
+                        <BrandLogo brand={selectedBrand} className="w-10 h-5 border border-slate-100 bg-white shrink-0 object-contain rounded" />
+                        <span className="text-slate-400 text-xs font-mono select-none">Бренд:</span>
+                      </div>
                     ) : (
-                      <div className="w-10 h-7 rounded-lg bg-amber-550/10 flex items-center justify-center text-amber-500 border border-amber-550/20">
-                        <Droplet className="w-3.5 h-3.5 fill-amber-500/10" />
+                      <div className="w-7 h-5 rounded bg-slate-200/50 flex items-center justify-center text-slate-500 shrink-0">
+                        <Search className="w-3 h-3" />
                       </div>
                     )}
-                    <span className="font-extrabold text-sm tracking-wide uppercase font-display select-none">
-                      {selectedBrand || "Выберите бренд масла"}
+                    <span className="font-bold text-xs tracking-wide uppercase font-display select-none">
+                      {selectedBrand || "Другие бренды масел из списка"}
                     </span>
                   </div>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? "rotate-180 text-[#FAEC00]" : (selectedBrand ? "text-slate-300" : "text-slate-500")}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? "rotate-180 text-slate-900" : "text-slate-400"}`} />
                 </button>
 
                 {/* Dropdown Options Popup */}
@@ -858,7 +868,7 @@ export default function App() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.98 }}
                       transition={{ duration: 0.18, ease: "easeOut" }}
-                      className="absolute z-30 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden text-left"
+                      className="absolute z-30 left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden text-left"
                     >
                       {/* Search Input Box */}
                       <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
@@ -889,59 +899,97 @@ export default function App() {
                       {/* Brands Option List */}
                       <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-slate-250">
                         {(() => {
-                          const filtered = brands.filter(b => 
+                           const filtered = brands.filter(b => 
                             b.toLowerCase().includes(brandSearchQuery.toLowerCase())
                           );
 
-                          if (filtered.length === 0) {
-                            return (
-                              <div className="px-4 py-6 text-center text-xs text-slate-400 font-medium">
-                                Брендов не найдено
-                              </div>
-                            );
-                          }
+                           if (filtered.length === 0) {
+                             return (
+                               <div className="px-4 py-6 text-center text-xs text-slate-400 font-medium">
+                                 Брендов не найдено
+                               </div>
+                             );
+                           }
 
-                          return filtered.map((brandName) => {
-                            const isChosen = selectedBrand === brandName;
-                            const count = products.filter(p => p.brand === brandName).length;
+                           return filtered.map((brandName) => {
+                             const isChosen = selectedBrand === brandName;
+                             const count = products.filter(p => p.brand === brandName).length;
 
-                            return (
-                              <button
-                                key={brandName}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedBrand(brandName);
-                                  setIsBrandDropdownOpen(false);
-                                  setBrandSearchQuery("");
-                                  // Smooth scroll down to products listing anchor or slightly below
-                                  setTimeout(() => {
-                                    const element = document.getElementById("brand-results-anchor");
-                                    if (element) {
-                                      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                                    }
-                                  }, 100);
-                                }}
-                                className={`w-full px-4 py-3 text-xs font-bold font-display uppercase tracking-wider flex items-center justify-between border-b border-slate-50 last:border-0 transition-colors ${
-                                  isChosen 
-                                    ? "bg-slate-950 text-white" 
-                                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
-                                }`}
-                              >
-                                <span className="flex items-center gap-3 select-none text-left">
-                                  <BrandLogo brand={brandName} className="w-14 h-7 border border-slate-200" />
-                                  <span>{brandName}</span>
-                                </span>
-                                <span className={`text-[10px] font-mono ${isChosen ? "text-[#FAEC00]" : "text-slate-400"}`}>
-                                  {count} поз.
-                                </span>
-                              </button>
-                            );
-                          });
-                        })()}
+                             return (
+                               <button
+                                 key={brandName}
+                                 type="button"
+                                 onClick={() => {
+                                   setSelectedBrand(brandName);
+                                   setIsBrandDropdownOpen(false);
+                                   setBrandSearchQuery("");
+                                   // Smooth scroll down to products listing anchor or slightly below
+                                   setTimeout(() => {
+                                     const element = document.getElementById("brand-results-anchor");
+                                     if (element) {
+                                       element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                     }
+                                   }, 100);
+                                 }}
+                                 className={`w-full px-4 py-2.5 text-xs font-bold font-display uppercase tracking-wider flex items-center justify-between border-b border-slate-50 last:border-0 transition-colors ${
+                                   isChosen 
+                                     ? "bg-slate-900 text-white" 
+                                     : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                                 }`}
+                               >
+                                 <span className="flex items-center gap-3 select-none text-left">
+                                   <BrandLogo brand={brandName} className="w-10 h-5 border border-slate-100 bg-white rounded" />
+                                   <span>{brandName}</span>
+                                 </span>
+                                 <span className={`text-[10px] font-mono ${isChosen ? "text-amber-400" : "text-slate-400"}`}>
+                                   {count} шт.
+                                 </span>
+                               </button>
+                             );
+                           });
+                         })()}
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* Popular Brands Selection */}
+              <div className="max-w-2xl mx-auto mb-10 text-center">
+                <span className="text-[10px] sm:text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest block mb-3.5 select-none text-center">
+                  Популярные бренды для быстрой замены:
+                </span>
+                <div className="flex flex-wrap justify-center items-center gap-2 px-2">
+                  {["Shell", "Лукойл", "Mobil", "ZIC"].map((brandName) => {
+                    const isSelected = selectedBrand === brandName;
+                    return (
+                      <button
+                        key={brandName}
+                        type="button"
+                        onClick={() => {
+                          setSelectedBrand(brandName);
+                          setIsBrandDropdownOpen(false);
+                          setBrandSearchQuery("");
+                          // Smooth scroll down to products listing anchor or slightly below
+                          setTimeout(() => {
+                            const element = document.getElementById("brand-results-anchor");
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
+                          }, 100);
+                        }}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold font-display uppercase tracking-wider transition-all duration-250 cursor-pointer ${
+                          isSelected
+                            ? "bg-slate-900 border-slate-900 text-white shadow-sm"
+                            : "bg-white border-slate-200 text-slate-650 hover:border-slate-400 hover:text-slate-950"
+                        }`}
+                      >
+                        <BrandLogo brand={brandName} className="w-8 h-4 rounded-sm bg-white shrink-0 object-contain" />
+                        <span>{brandName}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Anchor for results */}
@@ -949,7 +997,7 @@ export default function App() {
 
               {/* Products Area */}
               <AnimatePresence mode="wait">
-                {selectedBrand !== "" && (
+                {selectedBrand !== "" ? (
                   /* Products Present State */
                   <motion.div
                     key={selectedBrand}
@@ -957,7 +1005,7 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.25 }}
-                    className="space-y-6"
+                    className="space-y-4"
                   >
                     {/* Header showing active brand */}
                     {(() => {
@@ -1030,64 +1078,57 @@ export default function App() {
 
                       return (
                         <>
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-gradient-to-r from-slate-50 to-white border border-slate-200/40 rounded-3xl p-6 shadow-xs mb-8">
-                            <div className="flex items-center gap-5">
-                              <BrandLogo brand={selectedBrand} className="w-24 h-12 shadow-md border border-slate-250/30" />
-                              <div className="text-left">
-                                <div className="text-[10px] uppercase font-mono tracking-widest text-[#94A3B8] font-bold mb-1">Выбранный бренд</div>
-                                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-display flex items-center gap-3 leading-none">
-                                  <span>{selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : selectedBrand}</span>
-                                  <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 font-mono text-xs font-extrabold text-slate-650">
-                                    {groupedList.length} наим.
-                                  </span>
-                                </h3>
-                              </div>
+                          {/* Ultra Clean Info Row instead of heavy banners */}
+                          <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-sm font-bold text-slate-900 font-display uppercase tracking-wider">
+                                {selectedBrand === "Услуги" ? "Наши Услуги и Сервис" : selectedBrand}
+                              </h3>
+                              <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/50">
+                                {groupedList.length} позиций
+                              </span>
                             </div>
-
-                            {/* Reset selector link */}
-                            <button 
+                            <button
                               onClick={() => setSelectedBrand("")}
-                              className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-black text-slate-700 hover:text-slate-950 cursor-pointer transition-all active:scale-[0.98] flex items-center gap-2 shadow-xs self-start md:self-auto"
+                              className="text-xs font-semibold text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1 cursor-pointer"
                             >
-                              <span>←</span> Назад к выбору
+                              Сбросить ×
                             </button>
                           </div>
 
-                          {/* List of Grouped Products */}
-                          <div className="space-y-2.5">
+                          {/* List of Grouped Products - Ultra compact table format */}
+                          <div className="divide-y divide-slate-100">
                             {groupedList.map((group, idx) => (
                               <div 
                                 key={idx}
-                                className="bg-white border border-slate-150 hover:border-slate-350 transition-all duration-200 px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-xs"
+                                className="py-2.5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 transition-colors hover:bg-slate-50/40 px-1 rounded"
                               >
-                                {/* Name + Badges */}
-                                <div className="space-y-1 sm:max-w-[70%]">
-                                  <div className="flex flex-wrap items-center gap-2.5">
-                                    <h4 className="text-sm sm:text-base font-bold text-[#FAEC00] bg-slate-950 px-2 py-1 rounded-md inline-block font-display tracking-tight leading-snug hover:scale-[1.01] transition-transform">
+                                {/* Left side: Name + tags */}
+                                <div className="space-y-0.5 sm:max-w-[70%]">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <h4 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-snug">
                                       {group.baseName}
                                     </h4>
                                     
-
-
-                                    {/* Attributes Badges */}
-                                    <div className="flex gap-1 flex-wrap">
+                                    {/* Small modern metadata badges */}
+                                    <div className="flex gap-1 flex-wrap shrink-0">
                                       {group.attributes.isUltra && (
-                                        <span className="text-[9px] font-mono font-bold uppercase bg-[#FAEC00] text-slate-950 px-1.5 py-0.5 rounded">
+                                        <span className="text-[9px] font-mono font-bold tracking-wider uppercase bg-[#FAEC00] text-slate-950 px-1.5 py-0.5 rounded leading-none">
                                           Ultra
                                         </span>
                                       )}
                                       {group.attributes.isSemiSynthetic && (
-                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-50 text-slate-600 border border-slate-150 px-1.5 py-0.5 rounded">
+                                        <span className="text-[9px] font-mono font-semibold uppercase bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded leading-none">
                                           Полусинтетика
                                         </span>
                                       )}
                                       {group.attributes.isSynthetic && !group.attributes.isUltra && (
-                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-50 text-slate-800 border border-slate-150 px-1.5 py-0.5 rounded">
+                                        <span className="text-[9px] font-mono font-semibold uppercase bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded leading-none">
                                           Синтетика
                                         </span>
                                       )}
                                       {group.attributes.isDiesel && (
-                                        <span className="text-[9px] font-mono font-bold uppercase bg-slate-100 text-slate-650 px-1.5 py-0.5 rounded">
+                                        <span className="text-[9px] font-mono font-semibold uppercase bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded leading-none">
                                           Дизель
                                         </span>
                                       )}
@@ -1095,18 +1136,16 @@ export default function App() {
                                   </div>
                                 </div>
 
-                                {/* Volume & Price list formatted clearly */}
-                                <div className="flex flex-col sm:items-end justify-center shrink-0">
-                                  <ul className="space-y-1 sm:space-y-0.5 text-right sm:text-right">
-                                    {group.volumes.map((v, vIdx) => (
-                                      <li key={vIdx} className="flex sm:justify-end items-center gap-2 text-xs sm:text-sm font-mono text-slate-800 leading-none">
-                                        <span className="text-[#FAEC00] font-bold select-none text-[14px]">•</span>
-                                        <span className="text-slate-550 capitalize-first">{v.volume}</span>
-                                        <span className="text-slate-300">—</span>
-                                        <span className="font-extrabold text-slate-900">{v.price.toLocaleString('ru-RU')} ₽</span>
-                                      </li>
-                                    ))}
-                                  </ul>
+                                {/* Right side: Compact inline options list with bullet points */}
+                                <div className="flex flex-wrap gap-x-3.5 gap-y-1 sm:justify-end shrink-0">
+                                  {group.volumes.map((v, vIdx) => (
+                                    <div key={vIdx} className="flex items-center gap-1.5 font-mono text-xs sm:text-sm">
+                                      <span className="text-[#FAEC00] font-bold select-none text-[12px]">•</span>
+                                      <span className="text-slate-500 capitalize-first text-[11px] sm:text-xs">{v.volume}</span>
+                                      <span className="text-slate-300">—</span>
+                                      <span className="font-bold text-slate-900 text-xs sm:text-sm">{v.price.toLocaleString('ru-RU')} ₽</span>
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
                             ))}
@@ -1114,6 +1153,24 @@ export default function App() {
                         </>
                       );
                     })()}
+                  </motion.div>
+                ) : (
+                  /* Clean subtle placeholder when no brand is selected */
+                  <motion.div
+                    key="empty-brand-placeholder"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="text-center py-12 px-4 max-w-md mx-auto border border-dashed border-slate-200 rounded-2xl bg-slate-50/40"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                      <Droplet className="w-4.5 h-4.5 animate-pulse text-amber-500" />
+                    </div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-widest mb-1 font-display">Каталог не выбран</h3>
+                    <p className="text-[11px] text-slate-500 max-w-xs mx-auto leading-relaxed">
+                      Выберите один из популярных брендов выше или найдите нужного производителя через поиск в выпадающем меню.
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1124,12 +1181,21 @@ export default function App() {
       </section>
 
       {/* Booking Form (Запись на замену масла) */}
-      <section ref={bookingRef} id="booking" className="py-10 bg-slate-50 border-b border-slate-200">
+      <section ref={bookingRef} id="booking" className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           
+          <div className="text-center mb-6 space-y-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 font-display uppercase tracking-wider">
+              Онлайн-запись на замену масла
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
+              Выберите удобную дату и время обслуживания в автосервисе ПроМасло в Калининграде.
+            </p>
+          </div>
+
           <div className="p-1 sm:p-2 rounded-3xl bg-white border border-slate-200 shadow-xl shadow-slate-150/50 relative overflow-hidden h-[710px] flex flex-col">
             <iframe 
-              src="https://yandex.ru/business/widget/request/company/25579278228" 
+              src="https://yandex.ru/sprav/widget/request/company/25579278228" 
               className="w-full flex-1 h-full border-0 rounded-2xl"
               title="Онлайн запись на замену масла ПроМасло"
               allowFullScreen
@@ -1197,21 +1263,42 @@ export default function App() {
 
             </div>
 
-            {/* High-fidelity interactive embedded Yandex Maps Widget */}
-            <div className="lg:col-span-7 min-h-[380px] lg:min-h-[400px] rounded-3xl overflow-hidden relative border border-slate-200 shadow-xl bg-slate-100 flex flex-col">
+            {/* High-fidelity interactive embedded Yandex Maps Widget with fallback */}
+            <div className="lg:col-span-7 min-h-[380px] lg:min-h-[440px] rounded-3xl overflow-hidden relative border border-slate-200 shadow-xl bg-slate-50 flex flex-col">
               <iframe 
                 src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=25579278228" 
-                className="w-full flex-1 h-0 border-0"
+                className="w-full flex-1 min-h-[280px] border-0"
                 allowFullScreen={true}
                 loading="lazy"
                 title="Адрес автосервиса ПроМасло"
               />
               <div className="p-4 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs shrink-0">
-                <div className="space-y-0.5">
-                  <div className="font-bold text-slate-900 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                <div className="space-y-1">
+                  <div className="font-mono text-[9px] text-slate-400 font-bold uppercase tracking-wider">Интерактивная карта</div>
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5 leading-tight">
+                    <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                     <span>Адрес СТО: {CONTACTS.address}</span>
                   </div>
+                </div>
+
+                {/* Fallback Action Links for resilience */}
+                <div className="flex gap-2 w-full sm:w-auto shrink-0 flex-wrap">
+                  <a 
+                    href="https://yandex.ru/maps/org/promaslo/25579278228/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-705 hover:text-slate-900 transition-colors font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5"
+                  >
+                    <span>Яндекс.Карты ↗</span>
+                  </a>
+                  <a 
+                    href="https://2gis.ru/kaliningrad/firm/70000001043806096"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-705 hover:text-slate-900 transition-colors font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5"
+                  >
+                    <span>2ГИС ↗</span>
+                  </a>
                 </div>
               </div>
             </div>
