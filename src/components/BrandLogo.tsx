@@ -107,6 +107,37 @@ const BRANDS_ALIAS_MAP: Record<string, string> = {
   "нгн": "ngn"
 };
 
+const BRANDS_DOMAINS_MAP: Record<string, string> = {
+  "shell": "shell.com",
+  "mobil": "mobil.com",
+  "toyota": "toyota.com",
+  "lukoil": "lukoil.com",
+  "motul": "motul.com",
+  "castrol": "castrol.com",
+  "zic": "skzic.com",
+  "liqui-moly": "liqui-moly.com",
+  "vag": "volkswagen.de",
+  "valvoline": "valvoline.com",
+  "vmpauto": "smazka.ru",
+  "bardahl": "bardahl.com",
+  "total": "totalenergies.com",
+  "g-energy": "g-energy.org",
+  "elf": "elf.com",
+  "kixx": "kixxoil.com",
+  "idemitsu": "idemitsu.com",
+  "gm": "gm.com",
+  "repsol": "repsol.com",
+  "sintec": "sinteclubricants.ru",
+  "s-oil": "s-oil7.com",
+  "rowe": "rowe-oil.com",
+  "rolf": "rolfoil.ru",
+  "teboil": "teboil.fi",
+  "autobacs": "autobacs.com",
+  "aral": "aral.de",
+  "addinol": "addinol.de",
+  "ngn": "ngn-oil.com"
+};
+
 export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoProps) {
   const norm = brand.trim().toLowerCase();
 
@@ -187,25 +218,36 @@ export default function BrandLogo({ brand, className = "w-12 h-6" }: BrandLogoPr
       candidates.push(originalUrl);
     }
 
-    // 2. Generate combinations of casings and formats
-    for (const casing of uniqueCasings) {
-      for (const fmt of formats) {
-        const relPath = `logos/${casing}${fmt}`;
-        
-        let relUrl = "";
-        if (base === "./") {
-          relUrl = `./${relPath}`;
-        } else if (base.endsWith("/")) {
-          relUrl = `${base}${relPath}`;
-        } else {
-          relUrl = `${base}/${relPath}`;
+    // 2. Generate combinations of casings, formats, and folder casing (logos vs Logos)
+    for (const folder of ["logos", "Logos"]) {
+      for (const casing of uniqueCasings) {
+        for (const fmt of formats) {
+          const relPath = `${folder}/${casing}${fmt}`;
+          
+          let relUrl = "";
+          if (base === "./") {
+            relUrl = `./${relPath}`;
+          } else if (base.endsWith("/")) {
+            relUrl = `${base}${relPath}`;
+          } else {
+            relUrl = `${base}/${relPath}`;
+          }
+
+          const absUrl = `/${relPath}`;
+
+          if (relUrl) candidates.push(relUrl);
+          candidates.push(absUrl);
         }
-
-        const absUrl = `/${relPath}`;
-
-        if (relUrl) candidates.push(relUrl);
-        candidates.push(absUrl);
       }
+    }
+
+    // 3. Online ultra-reliable public CDN fallbacks if domain is mapped
+    const domain = BRANDS_DOMAINS_MAP[slug];
+    if (domain) {
+      candidates.push(`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`);
+      candidates.push(`https://logo.clearbit.com/${domain}`);
+      candidates.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
+      candidates.push(`https://www.google.com/s2/favicons?sz=128&domain=${domain}`);
     }
 
     // Filter unique values that are different from our starting relative src
